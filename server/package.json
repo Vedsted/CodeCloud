@@ -1,0 +1,14 @@
+{
+  "name": "codecloudserver",
+  "version": "1.0.0",
+  "description": "The code Cloud server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "CJJ\u001b[D\u001b[DDJJ",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^10.12.0"
+  }
+}
