@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
+    "strict": true,
     "outDir": "out",
     "sourceMap": true
   },
@@ -12,6 +13,7 @@
     "src/**/*.ts"
   ],
   "exclude": [
+    "out",
     "node_modules"
   ]
 }

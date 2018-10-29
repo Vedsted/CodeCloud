@@ -7,4 +7,4 @@ echo "Compiling typescript -> javascript"
 tsc
 
 echo "Starting node server"
-node out
+node out/server
