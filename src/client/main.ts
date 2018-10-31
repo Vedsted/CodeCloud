@@ -1,10 +1,20 @@
+import { buildEditor } from './editorCreator.js'
 
-function speak(): string {
-    return "Hello World";
+function test() {
+    fetch('http://jsonplaceholder.typicode.com/users/1')
+        .then(resp => {
+            return resp.json();
+        }).then(obj => {
+            buildEditor(JSON.stringify(obj));
+        });
 }
 
-let num = 1;
+console.log('test');
 
+test();
+
+/*
+let num = 1;
 document.addEventListener('keypress', function (event) {
     if (event.keyCode !== 13) {
         return;
@@ -25,4 +35,4 @@ document.addEventListener('keypress', function (event) {
 
     document.body.appendChild(line);
     i.focus();
-})
+})*/
