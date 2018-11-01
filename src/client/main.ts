@@ -1,17 +1,15 @@
 import { buildEditor } from './editorCreator.js'
+import { setEventHandlers } from './eventInitializer.js'
 
 function test() {
-    fetch('http://jsonplaceholder.typicode.com/users/1')
-        .then(resp => {
-            return resp.json();
-        }).then(obj => {
-            buildEditor(JSON.stringify(obj));
-        });
+    buildEditor('function test() {\n    if(this is a test) { \n print(\'wow\');\n}\n}')
 }
 
 console.log('test');
 
 test();
+
+setEventHandlers();
 
 /*
 let num = 1;

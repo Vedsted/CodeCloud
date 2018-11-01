@@ -1,34 +1,22 @@
 import { Collaborator } from './collaborator';
 
 export class Line {
-
-    lineNum: number;
     text: string;
     activeCollaborators: Collaborator[];
 
-    constructor(number: number, text: string) {
-        this.lineNum = number;
+    constructor(text: string) {
         this.text = text;
         this.activeCollaborators = [];
     }
 
     createElement(): HTMLDivElement {
-        let eShell = document.createElement('div');
 
-        let eLinenumber = document.createElement('div');
-        eLinenumber.className = 'lineNumber';
-        eLinenumber.innerText = String(this.lineNum + '.  ');
+        let eLine = document.createElement('div');
+        eLine.className = 'line';
+        eLine.contentEditable = 'true';
+        eLine.innerText = this.text;
 
-        let eText = document.createElement('div');
-        eText.className = 'content';
-        eText.contentEditable = 'true';
-        eText.innerText = this.text;
-
-
-        eShell.appendChild(eLinenumber);
-        eShell.appendChild(eText);
-
-        return eShell;
+        return eLine;
     }
 
     addCollaborator(collaborator: Collaborator) {
