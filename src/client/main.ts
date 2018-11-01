@@ -1,4 +1,7 @@
 
-function speak(): string {
-    return "Hello World";
-} 
+
+
+var socket = io();
+
+
+

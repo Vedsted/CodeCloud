@@ -1,10 +1,16 @@
+import {ConnectionHandler} from "./ConnectionHandler";
+
+
+
 const express = require('express');
 const path = require('path');
 const app = express()
 const http = require('http').Server(app);
-const socket = require('socket.io')(http);
+const io = require('socket.io')(http);
 
-const port: number = 8080;
+const handler = new ConnectionHandler(io);
+
+const port: number = 80;
 app.use('/client', express.static(path.join(__dirname, '../client')));
 app.use('/css', express.static(path.join(__dirname, '../../webcontent/css')));
 
