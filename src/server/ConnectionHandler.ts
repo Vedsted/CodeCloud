@@ -1,32 +1,25 @@
 
-export class ConnectionHandler {
+var io: any;
 
-    private server : any;
+function listClients() {
+    io.clients((error: any, clients: any) => {
+        if (error) throw error;
+        console.log(clients);
+    })
+}
 
+function onConnect(socket: any) {
+    console.log('A user connected!');
+    socket.on('disconnect', disconnect)
+    listClients()
+    return socket
+}
 
-    constructor(socketSever: any) {
-        this.server = socketSever;
-        this.setupEvents();
+function disconnect() {
+    console.log('i disconnected one client')
+}
 
-    }
-
-
-    private setupEvents() {
-        this.server.on('connection', function (socket: any) {
-            console.log('A user connected!');
-
-            socket.on('disconnect',function () {
-                console.log('A user disconnected!');
-            })
-        });
-
-
-    }
-
-    public listClients(){
-        for (const client of this.server.sockets.clients()) {
-
-            console.log(client.id);
-        }
-    }
+export function setupSocketServer(server: any) {
+    io = server
+    server.on('connection', onConnect)
 }
