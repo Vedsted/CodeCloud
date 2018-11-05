@@ -19,7 +19,12 @@ function disconnect() {
     console.log('i disconnected one client')
 }
 
+function sendText(data : string){
+    io.emit('updateText', {text: data})
+}
+
 export function setupSocketServer(server: any) {
     io = server
     server.on('connection', onConnect)
+    server.on('sendText', sendText)
 }
