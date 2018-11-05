@@ -15,8 +15,13 @@ const port: number = 80;
 app.use('/client', express.static(path.join(__dirname, '../client')));
 app.use('/css', express.static(path.join(__dirname, '../../webcontent/css')));
 
+
 app.get('/', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../webcontent/html/index.html'));
+});
+
+app.get('/front', function (req: any, res: any) {
+    res.sendFile(path.join(__dirname, '../../webcontent/html/front.html'));
 });
 
 
