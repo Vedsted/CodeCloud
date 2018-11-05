@@ -7,7 +7,7 @@ function createLines(text: string): string[] {
 
 export function buildEditor(text: string) {
     let editor = document.getElementById('editor') as HTMLDivElement;
-    editor.innerText = '';
+    editor.innerText = text;
 
     let linenumbers = document.getElementById('lineNumbers') as HTMLDivElement;
     linenumbers.innerText = '';
@@ -16,6 +16,6 @@ export function buildEditor(text: string) {
     createLines(text).forEach(l => {
         linenumbers.appendChild(createLineNumber(num));
         num++;
-        editor.appendChild(createLine(l));
+
     });
 }
