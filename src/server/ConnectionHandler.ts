@@ -11,6 +11,7 @@ function listClients() {
 function onConnect(socket: any) {
     console.log('A user connected!');
     socket.on('disconnect', disconnect)
+    socket.on('sendText',sendText)
     listClients()
     return socket
 }
@@ -20,11 +21,11 @@ function disconnect() {
 }
 
 function sendText(data : string){
-    io.emit('updateText', {text: data})
+    console.log('Received =' + data);
+    io.emit('updateText', data)
 }
 
 export function setupSocketServer(server: any) {
     io = server
     server.on('connection', onConnect)
-    server.on('sendText', sendText)
 }

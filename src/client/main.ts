@@ -5,11 +5,22 @@ function test() {
     buildEditor('function test() {\n    if(this is a test) { \n print(\'wow\');\n}\n}')
 }
 
+
+console.log(socket.id);
+socket.emit('sendText', "A lovely message");
+socket.on('updateText', (data : any)=>{
+    buildEditor(data)
+    console.log(data)
+});
+console.log(socket);
+
 console.log('test');
 
-test();
+//test();
 
 setEventHandlers();
+
+
 
 /*
 let num = 1;
