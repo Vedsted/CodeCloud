@@ -23,10 +23,15 @@ app.use('/css', express.static(path.join(__dirname, '../../webcontent/css')));
 app.get('/', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../webcontent/html/index.html'));
 });
-
 app.get('/front', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../webcontent/html/front.html'));
 });
+
+//API
+app.post('/api/createFile', function (req : any, res: any){
+    console.log("Created a new file!");
+});
+
 
 
 http.listen(port, function () {
