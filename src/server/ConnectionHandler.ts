@@ -1,31 +1,49 @@
 
-var io: any;
+export class ConnectionHandler {
+    private collaboratorNS: any;
+    private socketToName: Map<any, String>;
+    // private static handler : ConnectionHandler;
+    //
+    // public static getInstance(){
+    //     if (this.handler == undefined){
+    //         this.handler = new ConnectionHandler();
+    //     }
+    // }
 
-function listClients() {
-    io.clients((error: any, clients: any) => {
-        if (error) throw error;
-        console.log(clients);
-    })
-}
+    constructor(server: any) {
+        this.socketToName = new Map([]);
+        this.setupSocketServer(server);
+        // console.log(this);
+    }
 
-function onConnect(socket: any) {
-    console.log('A user connected!');
-    socket.on('disconnect', disconnect)
-    socket.on('sendText',sendText)
-    listClients()
-    return socket
-}
+    private onDisconnect() {
+        console.log('i disconnected one client')
+    }
 
-function disconnect() {
-    console.log('i disconnected one client')
-}
+    private setupSocketServer(server: any) {
+        this.collaboratorNS = server.of('/collab');
+        this.collaboratorNS.on('connection', (socket: any) => this.onConnect(socket));
 
-function sendText(data : string){
-    console.log('Received =' + data);
-    io.emit('updateText', data)
-}
+    }
 
-export function setupSocketServer(server: any) {
-    io = server
-    server.on('connection', onConnect)
+    private sendText(data: String) {
+        console.log('Received =' + data);
+        this.collaboratorNS.emit('updateText', data)
+    }
+
+    private onConnect(socket: any) {
+        console.log('A user connected!');
+        this.socketToName.set(socket.id, 'Nickname');
+        socket.on('disconnect', () => this.onDisconnect());
+        socket.on('sendText',(data: String)=>this.sendText(data));
+        () => this.listClients();
+
+    }
+
+    public listClients() {
+        this.collaboratorNS.clients((error: any, clients: any) => {
+            if (error) throw error;
+            console.log(clients);
+        })
+    }
 }
