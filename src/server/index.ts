@@ -1,4 +1,4 @@
-import {ConnectionHandler} from "./ConnectionHandler";
+import { ConnectionHandler } from "./ConnectionHandler";
 
 
 const express = require('express');
@@ -18,6 +18,7 @@ const port: number = 80;
 
 app.use('/js', express.static(path.join(__dirname, '../../webcontent/js')));
 app.use('/css', express.static(path.join(__dirname, '../../webcontent/css')));
+app.use('/vendors', express.static(path.join(__dirname, '../../webcontent/vendors')));
 
 
 app.get('/', function (req: any, res: any) {
