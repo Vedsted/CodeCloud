@@ -35,7 +35,7 @@ export class ConnectionHandler {
         console.log('A user connected!');
         this.socketToName.set(socket.id, 'Nickname');
         socket.on('disconnect', () => this.onDisconnect());
-        socket.on('sendText',(data: String)=>this.sendText(data));
+        socket.on('sendText', (data: String) => this.sendText(data));
         () => this.listClients();
 
     }

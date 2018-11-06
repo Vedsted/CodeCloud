@@ -4,15 +4,21 @@ editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");
 
 
+
 // @ts-ignore
 const socket = io('/collab');
 
 
-socket.emit('sendText', "A lovely message");
+
+editor.session.on('change', function (event: any) {
+    socket.emit('sendText', event.getValue());
+})
 
 socket.on('updateText', (data: any) => {
-    console.log(data)
+    editor.setValue('');
+    editor.setValue(data);
 });
+
 console.log(socket);
 // setEventHandlers();
 
