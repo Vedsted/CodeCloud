@@ -6,22 +6,21 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>CodeCloud</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" type="text/css" href="css/index.css" />
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-
-    </script>
-    <script src="./js/main.js" type="module"></script>
+    <link rel="stylesheet" type="text/css" href="./css/index.css" />
 
 </head>
 
 <body>
-    <header>CodeCloud</header>
     <div id="lineNumbers">
 
     </div>
     <div id="editor" contenteditable="true">
     </div>
+
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="./vendors/ace/src-noconflict/ace.js" type="module"></script>
+    <script src="./js/main.js" type="module"></script>
 </body>
 
 </html>
