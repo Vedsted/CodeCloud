@@ -1,4 +1,4 @@
-import { SendText } from './requestObjects/sendTextObject.js';
+import { SendText } from '../shared/requestObjects/sendTextObject.js';
 
 // @ts-ignore
 var editor = ace.edit("editor");

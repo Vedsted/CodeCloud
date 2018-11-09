@@ -1,4 +1,5 @@
-
+import { editText } from './editorRef.js'
+import { SendText } from '../shared/requestObjects/sendTextObject.js';
 
 let collaboratorNS: any;
 let socketToName: Map<any, String>;
@@ -13,8 +14,8 @@ export function setupSocketServer(server: any) {
 
 }
 
-function sendText(data: String, socket: any) {
-    console.log('Received =' + data);
+function sendText(data: SendText, socket: any) {
+    editText(data);
     socket.broadcast.emit('updateText', data)
 }
 
@@ -22,7 +23,7 @@ function onConnect(socket: any) {
     console.log('A user connected!');
     socketToName.set(socket.id, 'Nickname');
     socket.on('disconnect', () => onDisconnect());
-    socket.on('sendText', (data: String) => sendText(data, socket));
+    socket.on('sendText', (data: SendText) => sendText(data, socket));
     listClients();
 
 }
