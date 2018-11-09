@@ -1,5 +1,5 @@
-import { SendText } from '../shared/requestObjects/sendTextObject.js';
-import { updateText } from '../shared/editorUtil.js';
+import { SendText } from './requestObjects/sendTextObject.js';
+
 // @ts-ignore
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
@@ -30,7 +30,26 @@ editor.session.on('change', function (event: any) {
 socket.on('updateText', (data: any) => {
 
     changeLock = true;
-    updateText(data, editor);
+    let response = JSON.parse(data) as SendText;
+    if (response.action == 'insert') {
+
+        let text = response.content.reduce(function (e1, e2) {
+            return e1 + '\n' + e2;
+        })
+
+        editor.session.insert(response.positionStart, text);
+
+
+    } else if (response.action == 'remove') {
+        let r = {
+            start: response.positionStart,
+            end: response.positionEnd,
+        } as any;
+
+        editor.session.remove(r);
+        //    startRow, Number startColumn, Number endRow, Number endColumn)
+
+    }
     changeLock = false;
 
 });
