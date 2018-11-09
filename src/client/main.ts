@@ -27,6 +27,13 @@ editor.session.on('change', function (event: any) {
 })
 
 
+socket.on('receiveText', (data: any) => {
+    changeLock = true;
+    console.log("Receive text data = " + data.data)
+    editor.session.setValue(data.data, 0);
+    changeLock = false;
+})
+
 socket.on('updateText', (data: any) => {
 
     changeLock = true;
@@ -55,13 +62,14 @@ socket.on('updateText', (data: any) => {
 });
 
 console.log(socket);
+socket.emit('getText')
 // setEventHandlers();
 
 // document.addEventListener('keydown',function (event) {
-//     if (event.keyCode == 13){
-//
-//     }
-// })
+    //     if (event.keyCode == 13){
+        //
+        //     }
+        // })
 
 
 
