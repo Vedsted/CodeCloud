@@ -28,14 +28,17 @@ export class ConnectionHandler {
 
     private sendText(data: String) {
         console.log('Received =' + data);
-        this.collaboratorNS.emit('updateText', data)
+        //this.collaboratorNS.emit('updateText', data)
     }
 
     private onConnect(socket: any) {
         console.log('A user connected!');
         this.socketToName.set(socket.id, 'Nickname');
         socket.on('disconnect', () => this.onDisconnect());
-        socket.on('sendText', (data: String) => this.sendText(data));
+        //socket.on('sendText', (data: String) => this.sendText(data));
+        socket.on('sendText', function (data: any) {
+            socket.broadcast.emit('updateText', data)
+        });
         () => this.listClients();
 
     }

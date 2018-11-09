@@ -1,3 +1,5 @@
+import { SendText } from './requestObjects/sendTextObject.js';
+
 // @ts-ignore
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
@@ -19,15 +21,35 @@ document.addEventListener('keydown', function (event) {
 editor.session.on('change', function (event: any) {
 
     if (changeLock) return
-    socket.emit('sendText', editor.getValue());
-
+    console.log(event);
+    let request = new SendText(event.action, event.start, event.lines, event.end);
+    socket.emit('sendText', JSON.stringify(request));
 })
 
 
 socket.on('updateText', (data: any) => {
 
     changeLock = true;
-    editor.setValue(data,1);
+    let response = JSON.parse(data) as SendText;
+    if (response.action == 'insert') {
+
+        let text = response.content.reduce(function (e1, e2) {
+            return e1 + '\n' + e2;
+        })
+
+        editor.session.insert(response.positionStart, text);
+
+
+    } else if (response.action == 'remove') {
+        let r = {
+            start: response.positionStart,
+            end: response.positionEnd,
+        } as any;
+
+        editor.session.remove(r);
+        //    startRow, Number startColumn, Number endRow, Number endColumn)
+
+    }
     changeLock = false;
 
 });
