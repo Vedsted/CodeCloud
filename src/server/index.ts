@@ -1,4 +1,4 @@
-import { ConnectionHandler } from "./ConnectionHandler";
+import { setupSocketServer } from "./ConnectionHandler";
 
 
 const express = require('express');
@@ -7,10 +7,7 @@ const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-// ConnectionHandler.setupSocketServer(io);
-
-
-const con = new ConnectionHandler(io);
+setupSocketServer(io);
 
 
 
@@ -29,7 +26,7 @@ app.get('/front', function (req: any, res: any) {
 });
 
 //API
-app.post('/api/createFile', function (req : any, res: any){
+app.post('/api/createFile', function (req: any, res: any) {
     console.log("Created a new file!");
 });
 
