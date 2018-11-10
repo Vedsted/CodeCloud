@@ -1,4 +1,4 @@
-import { setupSocketServer } from "./ConnectionHandler";
+import { ConnectionHandler } from "./ConnectionHandler";
 
 
 const express = require('express');
@@ -7,7 +7,7 @@ const app = express()
 const http = require('http').Server(app);
 const io = require('socket.io')(http);
 
-setupSocketServer(io);
+const con = new ConnectionHandler(io);
 
 
 
