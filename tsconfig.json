@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "commonjs",
     "strict": true,
-    "outDir": "out",
+    "outDir": "out/client",
     "sourceMap": true
   },
   "files": [
     "./node_modules/@types/node/index.d.ts"
   ],
   "include": [
-    "src/**/*.ts"
+    "src/client/*.ts"
   ],
   "exclude": [
     "out",
