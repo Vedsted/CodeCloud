@@ -1,7 +1,31 @@
 import { SendText } from '../shared/requestObjects/sendTextObject.js'
+import { Collaborator } from '../shared/requestObjects/collaboratorObject.js' 
 
 let editorContent: string = "";
+let collaborators: Map<string, Collaborator> = new Map<string, Collaborator>();
 
+export function addCollaborator(id: string, collaborator: Collaborator) {
+    console.log("adding collab: " + id)
+    collaborators.set(id, collaborator);
+    console.log(collaborators);
+}
+
+export function removeCollaborator(id: string) {
+    collaborators.delete(id);
+}
+
+export function getCollaborators(): IterableIterator<[string, Collaborator]> {
+    return collaborators.entries();
+}
+
+export function setCollaboratorPosition(id: string, position: any) {
+    console.log("retrieving collab: " + id);
+    let collaborator = collaborators.get(id);
+    console.log("collaborator: " + collaborator);
+    if (collaborator != undefined) {
+        collaborator.position = position;
+    }
+}
 
 export function editText(data: string) {
     let response = JSON.parse(data) as SendText;

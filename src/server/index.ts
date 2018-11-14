@@ -11,7 +11,7 @@ const con = new ConnectionHandler(io);
 
 
 
-const port: number = 80;
+const port: number = 8080;
 
 app.use('/js', express.static(path.join(__dirname, '../../../webcontent/js')));
 app.use('/css', express.static(path.join(__dirname, '../../../webcontent/css')));
