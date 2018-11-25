@@ -11,12 +11,7 @@ const socket = io('/collab');
 
 var changeLock = false;
 
-/*
-document.addEventListener('keydown', function (event) {
-    if (editor.getValue()) {
-    }
-});
-*/
+
 
 editor.session.on('change', function (event: any) {
 
@@ -54,7 +49,6 @@ socket.on('updateText', (data: any) => {
         } as any;
 
         editor.session.remove(r);
-        //    startRow, Number startColumn, Number endRow, Number endColumn)
 
     }
     changeLock = false;
@@ -63,14 +57,3 @@ socket.on('updateText', (data: any) => {
 
 console.log(socket);
 socket.emit('getText')
-// setEventHandlers();
-
-// document.addEventListener('keydown',function (event) {
-    //     if (event.keyCode == 13){
-        //
-        //     }
-        // })
-
-
-
-

@@ -1,11 +1,14 @@
+import * as express from 'express';
+import * as path from 'path';
+import * as http from 'http';
+import * as socketIO from 'socket.io';
+
 import { ConnectionHandler } from "./ConnectionHandler";
 
 
-const express = require('express');
-const path = require('path');
-const app = express()
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
+const app = express();
+let server = new http.Server(app);
+const io = socketIO(server);
 
 const con = new ConnectionHandler(io);
 
@@ -21,6 +24,7 @@ app.use('/vendors', express.static(path.join(__dirname, '../../../webcontent/ven
 app.get('/', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../../webcontent/html/index.html'));
 });
+
 app.get('/front', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../../webcontent/html/front.html'));
 });
@@ -32,6 +36,6 @@ app.post('/api/createFile', function (req: any, res: any) {
 
 
 
-http.listen(port, function () {
+server.listen(port, function () {
     console.log(`Example app listening on port ${port}!`);
 })

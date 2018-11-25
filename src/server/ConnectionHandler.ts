@@ -1,11 +1,13 @@
-import { editText, getEditorContent } from './editorRef.js'
+import { editText, getEditorContent } from './editorRef.js';
+import * as io from 'socket.io';
 
 export class ConnectionHandler {
-    private collaboratorNS: any;
+    private collabNameSpaces: io.Namespace[];
     private socketToName: Map<any, string>;
 
-    constructor(server: any) {
+    constructor(server: io.Server) {
         this.socketToName = new Map([]);
+        this.collabNameSpaces = [];
         this.setupSocketServer(server);
     }
 
@@ -13,18 +15,18 @@ export class ConnectionHandler {
         console.log('A Client Disconnected')
     }
 
-    private setupSocketServer(server: any) {
+    private setupSocketServer(server: io.Server) {
         this.socketToName = new Map([]);
-        this.collaboratorNS = server.of('/collab');
-        this.collaboratorNS.on('connection', (socket: any) => this.onConnect(socket));
+        this.collabNameSpaces[0] = server.of('/collab');
+        this.collabNameSpaces[0].on('connection', (socket: io.Socket) => this.onConnect(socket));
     }
 
-    private sendText(data: string, socket: any) {
+    private sendText(data: string, socket: io.Socket) {
         editText(data);
         socket.broadcast.emit('updateText', data)
     }
 
-    private onConnect(socket: any) {
+    private onConnect(socket: io.Socket) {
         console.log('A user connected!');
         this.socketToName.set(socket.id, 'Nickname');
         socket.on('disconnect', () => this.onDisconnect());
@@ -36,7 +38,7 @@ export class ConnectionHandler {
     }
 
     private listClients() {
-        this.collaboratorNS.clients((error: any, clients: any) => {
+        this.collabNameSpaces[0].clients((error: any, clients: any) => {
             if (error) throw error;
             console.log(clients);
         });
