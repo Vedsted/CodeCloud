@@ -1,6 +1,8 @@
 # CodeCloud
 aka Firepad
 
+## Requires
+running mongo db
 
 ## Running the server
 Run the provided compile-run.sh or compile-run.bat
