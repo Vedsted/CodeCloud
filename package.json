@@ -4,7 +4,8 @@
   "description": "The code Cloud server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "echo \"Starting node server\" && NODE_ENV=development node out/server/server"
   },
   "author": "CJJ\u001b[D\u001b[DDJJ",
   "license": "ISC",
