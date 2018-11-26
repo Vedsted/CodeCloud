@@ -9,7 +9,7 @@ editor.session.setMode("ace/mode/javascript");
 // @ts-ignore
 const socket = io('/collab');
 socketSetUp();
-socket.emit('joinRoom', 'testFile1');
+socket.emit('joinRoom', window.location.href.split('file/')[1]);
 
 var changeLock = false;
 
