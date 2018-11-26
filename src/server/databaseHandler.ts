@@ -46,9 +46,6 @@ export class DatabaseHandler {
                 file = file as IFile;
                 file.content = obj.content;
                 file.save()
-                    .then(() => {
-                        console.log('Change Saved');
-                    })
                     .catch(err => console.error(err));
 
             })

@@ -28,17 +28,19 @@ function startServer() {
     app.use('/vendors', express.static(path.join(__dirname, '../../../webcontent/vendors')));
 
 
-    app.get('/', function (req: any, res: any) {
+    app.get('/file/*', function (req: express.Request, res: express.Response) {
         res.sendFile(path.join(__dirname, '../../../webcontent/html/index.html'));
     });
 
-    app.get('/front', function (req: any, res: any) {
+    app.get('/front', function (req: express.Request, res: express.Response) {
         res.sendFile(path.join(__dirname, '../../../webcontent/html/front.html'));
     });
 
     //API
-    app.post('/api/createFile', function (req: any, res: any) {
-        console.log("Created a new file!");
+    app.get('/create/*', function (req: express.Request, res: express.Response) {
+        let fileName = req.url.replace('/create/', '');
+        databaseHandler.createFile(fileName);
+        res.sendFile(path.join(__dirname, '../../../webcontent/html/create.html'))
     });
 
 
