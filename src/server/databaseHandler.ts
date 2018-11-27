@@ -61,6 +61,16 @@ export class DatabaseHandler {
             .catch(err => console.error(err));
     }
 
+    getFiles(): Promise<string[]> {
+        return this.model
+            .find({})
+            .then(users => {
+                return users.map(file => {
+                    return file.name;
+                })
+            })
+    }
+
 }
 
 // we're connected!

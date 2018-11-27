@@ -29,11 +29,18 @@ function startServer() {
 
 
     app.get('/file/*', function (req: express.Request, res: express.Response) {
-        res.sendFile(path.join(__dirname, '../../../webcontent/html/index.html'));
+        res.sendFile(path.join(__dirname, '../../../webcontent/html/editFile.html'));
     });
 
-    app.get('/front', function (req: express.Request, res: express.Response) {
+    app.get('/', function (req: express.Request, res: express.Response) {
         res.sendFile(path.join(__dirname, '../../../webcontent/html/front.html'));
+    });
+
+    app.get('/getFiles', function (req: express.Request, res: express.Response) {
+        databaseHandler.getFiles().then(names => {
+            let ret = JSON.stringify(names);
+            res.send(names);
+        })
     });
 
     //API
