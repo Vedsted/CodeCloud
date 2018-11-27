@@ -32,7 +32,7 @@ editor.session.on('change', function (event: any) {
 
 
 socket.on('connect', () => {
-    socketID = "/collab#" + socket.id;
+    socketID = socket.id;
 });
 
 socket.on('receiveText', (data: any) => {
