@@ -5,6 +5,15 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Remote",
+            "address": "localhost",
+            "port": 9222,
+            "localRoot": "${workspaceFolder}/src/server",
+            "remoteRoot": "/home/ccl/git/CodeCloud/src/server"
+        },
+        {
             "type": "chrome",
             "request": "launch",
             "name": "Launch Chrome against localhost",

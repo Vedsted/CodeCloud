@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "echo \"Starting node server\" && NODE_ENV=development node out/server/server"
+    "start": "echo \"Starting node server\" && NODE_ENV=development node out/server/server",
+    "debug": "nodemon --watch ./out --inspect=0.0.0.0:9222 --nolazy ./out/server/server/index.js"
   },
   "author": "CJJ\u001b[D\u001b[DDJJ",
   "license": "ISC",
