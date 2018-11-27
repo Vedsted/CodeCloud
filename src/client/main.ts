@@ -31,7 +31,8 @@ function socketSetUp() {
 
     socket.on('receiveText', (data: any) => {
         changeLock = true;
-        console.log("Receive text data = " + data.data)
+        console.log("Receive text data = " + data.data);
+        //@ts-ignore
         editor.session.setValue(data.data, 0);
         changeLock = false;
     })
