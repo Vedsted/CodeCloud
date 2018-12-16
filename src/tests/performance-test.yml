@@ -14,6 +14,7 @@ config:
       arrivalRate: 10 # The average number of virtual users pr. sec.
 scenarios:
   - name: "Simulate the use of the editor"
+    weight: 80 # Roughly 80% of the scenarios is estimated to be users editing a file
     engine: "socketio" # Use socketio connection
     flow:
       - get:
@@ -38,6 +39,7 @@ scenarios:
           namespace: "/collab"
       - think: 5 # Lurk for 5 seconds
   - name: "Simulate a lurker on the main page"
+    weight: 20 # Roughly 20% of the scenarios is estimated to be users lurking in a file
     engine: "socketio" # Use socketio connection
     flow:
       - get:
