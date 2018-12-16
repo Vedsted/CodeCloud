@@ -5,9 +5,9 @@ let editorContent: string = "";
 let collaborators: Map<string, Collaborator> = new Map<string, Collaborator>();
 
 export function addCollaborator(id: string, collaborator: Collaborator) {
-    console.log("adding collab: " + id)
+    //console.log("adding collab: " + id);
     collaborators.set(id, collaborator);
-    console.log(collaborators);
+    //console.log(collaborators);
 }
 
 export function removeCollaborator(id: string) {
@@ -19,9 +19,9 @@ export function getCollaborators(): IterableIterator<[string, Collaborator]> {
 }
 
 export function setCollaboratorPosition(id: string, position: any) {
-    console.log("retrieving collab: " + id);
+    //console.log("retrieving collab: " + id);
     let collaborator = collaborators.get(id);
-    console.log("collaborator: " + collaborator);
+    //console.log("collaborator: " + collaborator);
     if (collaborator != undefined) {
         collaborator.position = position;
     }

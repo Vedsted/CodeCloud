@@ -5,6 +5,7 @@ import * as io from 'socket.io';
 export class ConnectionHandler {
     private collabNameSpaces: io.Namespace[];
     private socketToName: Map<any, string>;
+    private connectionCounter: number = 0;
 
     constructor(server: io.Server) {
         this.socketToName = new Map([]);
@@ -13,7 +14,7 @@ export class ConnectionHandler {
     }
 
     private onDisconnect() {
-        console.log('A Client Disconnected');
+        //console.log('A Client Disconnected');
     }
 
     private setupSocketServer(server: io.Server) {
@@ -23,13 +24,16 @@ export class ConnectionHandler {
     }
 
     private sendText(data: string, socket: io.Socket) {
+        //console.log("recieved data to add to editor: " + data);
         editText(data);
         socket.broadcast.emit('updateText', data)
     }
 
 
     private onConnect(socket: io.Socket) {
-        console.log('A user connected! ID: ' + socket.id);
+        this.connectionCounter++;
+        //console.log('A user connected! ID: ' + socket.id);
+        //console.log("Connection counter: " + this.connectionCounter);
         this.socketToName.set(socket.id, 'Nickname');
         socket.on('disconnect', () => this.onDisconnect());
         socket.on('sendText', (data: string) => this.sendText(data, socket));
@@ -43,11 +47,11 @@ export class ConnectionHandler {
         let collaboratorCursorPos = { row: 0, column: 0 };
         addCollaborator(socket.id, new Collaborator(socket.id, collaboratorCursorPos));
         socket.on('getCollaborators', () => {
-            console.log(JSON.stringify(Array.from(getCollaborators())));
+            //console.log(JSON.stringify(Array.from(getCollaborators())));
             socket.emit('receiveCollaborators', JSON.stringify(Array.from(getCollaborators())));
         });
         socket.on('setCollaboratorPosition', (data: any) => {
-            console.log("setCollaboratorPosition: " + data);
+            //console.log("setCollaboratorPosition: " + data);
             setCollaboratorPosition(data.id, data.position);
             socket.broadcast.emit('updateCollaboratorPosition', JSON.stringify(Array.from(getCollaborators())));
         });
@@ -58,7 +62,7 @@ export class ConnectionHandler {
     private listClients() {
         this.collabNameSpaces[0].clients((error: any, clients: any) => {
             if (error) throw error;
-            console.log(clients);
+            //console.log(clients);
         });
     }
 }
