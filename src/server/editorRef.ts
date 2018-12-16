@@ -35,30 +35,32 @@ export function editText(data: string) {
     if (response.action === 'insert') {
         editorContent = insert(text, response);
     } else if (response.action === 'remove') {
-        editorContent = remove(text, response);
+        editorContent = remove(response);
     }
 
 }
 
-
-function remove(text: string, response: SendText): string {
+/*
+* Removes the range specified in the SendText object
+* Parts of this function are very similar to the steps in applyDelta() found here:
+* https://github.com/ajaxorg/ace/blob/master/lib/ace/apply_delta.js
+*/
+function remove(response: SendText): string {
     let editorContentLines = editorContent.split('\n') as any[];
-    let temp: string = "";
-    for (let start = response.positionStart.row; start <= response.positionEnd.row; start++) {
-        temp += editorContentLines[start];
-        editorContentLines[start] = null;
-        if (start != response.positionEnd.row) {
-            temp += "\n"
-        }
-    }
-    let value = temp.replace(text, "");
 
-    editorContentLines[response.positionStart.row] = value;
-    editorContentLines = editorContentLines.filter(function (e1) {
-        return e1 != null
-    });
-    return editorContentLines.reduce(function (e1, e2) {
-        return e1 + '\n' + e2;
+    var startRow = response.positionStart.row;
+    var startColumn = response.positionStart.column;
+    var endRow = response.positionEnd.row;
+    var endColumn = response.positionEnd.column;
+    var line = editorContentLines[startRow];
+
+    editorContentLines.splice(
+        startRow, endRow - startRow + 1,
+        line.substring(0, startColumn) + editorContentLines[endRow].substring(endColumn)
+    );
+
+    return editorContentLines.reduce(function (accumulator, currentValue) {
+        return accumulator + '\n' + currentValue;
     });
 
 }
