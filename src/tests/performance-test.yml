@@ -1,6 +1,11 @@
 #
 # Requires artillery.io installed.
-# Run from terminal: artillery run performance-test.yml
+#   Install on linux (debian) by running:
+#     sudo npm install -g artillery
+# Run from terminal:
+#   artillery run -o result.json performance-test.yml
+# To generate a report run:
+#   artillery report result.json
 #
 config:
   target: "http://localhost:8080"
