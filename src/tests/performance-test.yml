@@ -11,9 +11,9 @@ config:
   target: "http://localhost:8080"
   phases:
     - duration: 60 # The duration of the test in seconds
-      arrivalRate: 20 # The average number of virtual users pr. sec.
+      arrivalRate: 10 # The average number of virtual users pr. sec.
 scenarios:
-  - name: "Request the main page"
+  - name: "Simulate the use of the editor"
     engine: "socketio" # Use socketio connection
     flow:
       - get:
@@ -21,16 +21,28 @@ scenarios:
       - emit:
           channel: "getText" # The event to send to the server
           namespace: "/collab" # The namespace for the socket defined by the server
-      - think: 5 # Sit and lurk in the channel
-      - emit:
-          channel: "sendText"
-          data: >
-              {"action":"insert","positionStart":{"row":0,"column":0},"content":["|-0-|\n"],"positionEnd":{"row":0,"column":1}}
-          namespace: "/collab"
-      - think: 15
-      - emit:
+      - think: 5
+      - loop: # Loop the sendText event via socket.io
+        - emit:
+            channel: "sendText"
+            data: >
+                {"action":"insert","positionStart":{"row":0,"column":0},"content":["|-0-|\n"],"positionEnd":{"row":0,"column":1}}
+            namespace: "/collab"
+        - think: 2 # Wait 2 seconds before sending new data
+        count: 20
+      - think: 1
+      - emit: # Send some other text to the server via socket.io
           channel: "sendText"
           data: >
               {"action":"insert","positionStart":{"row":3,"column":5},"content":["|-0-|"],"positionEnd":{"row":3,"column":10}}
           namespace: "/collab"
-      - think: 15
+      - think: 5 # Lurk for 5 seconds
+  - name: "Simulate a lurker on the main page"
+    engine: "socketio" # Use socketio connection
+    flow:
+      - get:
+          url: "/" # Regular HTTP GET request
+      - emit:
+          channel: "getText" # The event to send to the server
+          namespace: "/collab" # The namespace for the socket defined by the server
+      - think: 10 # Sit and lurk in the channel
