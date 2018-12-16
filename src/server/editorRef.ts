@@ -29,8 +29,8 @@ export function setCollaboratorPosition(id: string, position: any) {
 
 export function editText(data: string) {
     let response = JSON.parse(data) as SendText;
-    let text = response.content.reduce(function (e1, e2) {
-        return e1 + '\n' + e2;
+    let text = response.content.reduce(function (accumulator, currentValue) {
+        return accumulator + '\n' + currentValue;
     });
     if (response.action === 'insert') {
         editorContent = insert(text, response);
@@ -70,8 +70,8 @@ function insert(text: string, response: SendText): string {
     let value = beforeText + text + afterText;
     editorContentLines[response.positionStart.row] = value;
 
-    return editorContentLines.reduce(function (e1, e2) {
-        return e1 + '\n' + e2;
+    return editorContentLines.reduce(function (accumulator, currentValue) {
+        return accumulator + '\n' + currentValue;
     });
 
 }

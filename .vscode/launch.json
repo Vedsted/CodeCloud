@@ -5,6 +5,9 @@
     "version": "0.2.0",
     "configurations": [
         {
+            /*
+            * NB: Remote debugging requires to install nodemon package: npm install nodemon
+            */          
             "type": "node",
             "request": "attach",
             "name": "Attach to Remote",

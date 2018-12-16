@@ -3,14 +3,10 @@ import { Collaborator } from '../shared/requestObjects/collaboratorObject.js';
 import { stringify } from 'querystring';
 import { Session } from 'inspector';
 
-// @ts-ignore
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");
-export {editor as AceEditor};
 
-
-// @ts-ignore
 const socket = io('/collab');
 let socketID = "";
 
@@ -24,6 +20,8 @@ editor.session.on('change', function (event: any) {
     console.log(event);
     let request = new SendText(event.action, event.start, event.lines, event.end);
     socket.emit('sendText', JSON.stringify(request));
+    console.log("sendText: " + event.lines);
+    console.log("sendText (JSON data): " + JSON.stringify(request));
     let cursorPos = getCursorPosition();
     console.log("myCursorPos: " + cursorPos.row + " " + cursorPos.column);
     let collaboratorRequest = new Collaborator(socketID, {row: cursorPos.row, column: cursorPos.column+1});
@@ -38,7 +36,7 @@ socket.on('connect', () => {
 socket.on('receiveText', (data: any) => {
     changeLock = true;
     console.log("Receive text data = " + data.data)
-    editor.session.setValue(data.data, 0);
+    editor.session.setValue(data.data);
     changeLock = false;
 });
 
@@ -48,9 +46,9 @@ socket.on('updateText', (data: any) => {
     let response = JSON.parse(data) as SendText;
     if (response.action == 'insert') {
 
-        let text = response.content.reduce(function (e1, e2) {
-            return e1 + '\n' + e2;
-        })
+        let text = response.content.reduce(function (accumulator, currentValue) {
+            return accumulator + '\n' + currentValue;
+        });
 
         editor.session.insert(response.positionStart, text);
 
@@ -82,26 +80,26 @@ function getCursorPosition(): any {
 }
 
 socket.on('receiveCollaborators', (data: any) => {
-    let response = new Map<string, Collaborator>(JSON.parse(data));
+    // let response = new Map<string, Collaborator>(JSON.parse(data));
     
-    collaborators = response;
+    // collaborators = response;
 
-    // Clear any existing markers in the editor
-    let inFront = true;
-    let markerArray = editor.session.getMarkers(inFront);
-    if (markerArray.array != undefined) {
-        markerArray.array.forEach((markerID: any) => {
-            editor.session.removeMarker(markerID);
-        });;
-    }
+    // // Clear any existing markers in the editor
+    // let inFront = true;
+    // let markerArray = editor.session.getMarkers(inFront);
+    // if (markerArray.array != undefined) {
+    //     markerArray.array.forEach((markerID: any) => {
+    //         editor.session.removeMarker(markerID);
+    //     });;
+    // }
 
-    // Add/update the dynamic marker to the AceEditor
-    collaborators.forEach((collaborator, id) => {
-        console.log(collaborator.id + " " + collaborator.position.column + " " + collaborator.position.row);
-        if(collaborator.id != socketID) {
-            //addCollaboratorMarker(collaborator);
-        }
-    });
+    // // Add/update the dynamic marker to the AceEditor
+    // collaborators.forEach((collaborator, id) => {
+    //     console.log(collaborator.id + " " + collaborator.position.column + " " + collaborator.position.row);
+    //     if(collaborator.id != socketID) {
+    //         //addCollaboratorMarker(collaborator);
+    //     }
+    // });
 });
 
 socket.on('updateCollaboratorPosition', (data: any) => {
@@ -109,6 +107,8 @@ socket.on('updateCollaboratorPosition', (data: any) => {
     
     collaborators = response;
     console.log("updateCollaboratorPosition: " + collaborators);
+    let Range = ace.require("ace/range").Range;
+
 
     // Clear any existing markers in the editor
     let inFront = true;
@@ -118,17 +118,15 @@ socket.on('updateCollaboratorPosition', (data: any) => {
             // key: the name of the object key
             // index: the ordinal position of the key within the object
             console.log("remove marker: " + key);
-            editor.session.removeMarker(key);
-        });        
+            editor.session.removeMarker(Number.parseInt(key));
+        });
     }
 
-    // @ts-ignore
-    var aceRange = ace.require('ace/range').Range;
     // Add/update the dynamic marker to the AceEditor
     collaborators.forEach((collaborator, id) => {
         console.log(collaborator.id + " " + collaborator.position.row + " " + collaborator.position.column);
         if(collaborator.id != socketID) {
-            editor.session.addMarker(new aceRange(collaborator.position.row, collaborator.position.column, collaborator.position.row, collaborator.position.column+1),
+            editor.session.addMarker(new Range(collaborator.position.row, collaborator.position.column, collaborator.position.row, collaborator.position.column+1),
                 "MyCursorCssClass", "text", true);
         }
     });
@@ -141,8 +139,6 @@ function addCollaboratorMarker(collaborator: Collaborator) {
 
 function drawAuthInfos(html: any, markerLayer: any, session: any, config: any) {
     console.log("update dynamicmarker start");
-    // @ts-ignore
-    var aceRange = ace.require('ace/range').Range;
 
     var bgColor = "#ff0000"; //colorPool[uid];
     var extraStyle = "position:absolute;border-left: 1px solid #ff0000;" + "z-index: 2000";
@@ -153,7 +149,7 @@ function drawAuthInfos(html: any, markerLayer: any, session: any, config: any) {
         "", config, 0, extraStyle);*/
         
     markerLayer.drawSingleLineMarker(html,
-        new aceRange(3, 2, 0, 0),
+        new AceAjax.Range(3, 2, 0, 0),
         "", config, 0, extraStyle);
 
     
