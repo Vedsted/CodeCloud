@@ -2,11 +2,13 @@ import * as express from 'express';
 import * as path from 'path';
 import * as http from 'http';
 import * as socketIO from 'socket.io';
+import * as compression from 'compression';
 
 import { ConnectionHandler } from "./ConnectionHandler";
 
 
 const app = express();
+app.use(compression());
 let server = new http.Server(app);
 const io = socketIO(server);
 
