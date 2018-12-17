@@ -1,4 +1,4 @@
-import { SendText } from '../shared/requestObjects/sendTextObject.js';
+import { SendText } from '../shared/requestObjects/sendTextObject';
 import * as io from 'socket.io-client';
 
 import * as ace from 'brace';
