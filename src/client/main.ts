@@ -1,19 +1,23 @@
 import { SendText } from '../shared/requestObjects/sendTextObject.js';
+import * as io from 'socket.io-client';
 
-// @ts-ignore
+import * as ace from 'brace';
+import 'brace/mode/javascript';
+import 'brace/theme/monokai';
+
+
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");
 
 
-// @ts-ignore
 const socket = io('/collab');
 
 var changeLock = false;
 
 
 
-editor.session.on('change', function (event: any) {
+editor.session.on('change', function (event: ace.EditorChangeEvent) {
 
     if (changeLock) return
     console.log(event);
@@ -22,14 +26,14 @@ editor.session.on('change', function (event: any) {
 })
 
 
-socket.on('receiveText', (data: any) => {
+socket.on('receiveText', (data: { data: string }) => {
     changeLock = true;
     console.log("Receive text data = " + data.data)
-    editor.session.setValue(data.data, 0);
+    editor.session.setValue(data.data);
     changeLock = false;
 })
 
-socket.on('updateText', (data: any) => {
+socket.on('updateText', (data: string) => {
 
     changeLock = true;
     let response = JSON.parse(data) as SendText;

@@ -1,11 +1,10 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "../../webcontent/js"
+    "outDir": "../../webcontent/js",
+    "module": "commonjs",
   },
-
   "include": [
     "./*.ts"
   ]
-
 }
