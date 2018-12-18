@@ -1,6 +1,7 @@
 import { editText, getEditorContent } from './editorRef.js';
 import * as io from 'socket.io';
 
+
 export class ConnectionHandler {
     private collabNameSpaces: io.Namespace[];
     private socketToName: Map<any, string>;
@@ -26,15 +27,17 @@ export class ConnectionHandler {
         socket.broadcast.emit('updateText', data)
     }
 
+    private receiveText(socket: io.Socket) {
+        socket.emit('receiveText', { data: getEditorContent() });
+    }
+
     private onConnect(socket: io.Socket) {
         console.log('A user connected!');
         this.socketToName.set(socket.id, 'Nickname');
         socket.on('disconnect', () => this.onDisconnect());
         socket.on('sendText', (data: string) => this.sendText(data, socket));
-        socket.on('getText', () => {
-            socket.emit('receiveText', { data: getEditorContent() })
-        });
-        () => this.listClients();
+        socket.on('getText', () => this.receiveText(socket));
+        // () => this.listClients();
     }
 
     private listClients() {
