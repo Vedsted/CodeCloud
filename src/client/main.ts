@@ -22,14 +22,14 @@ editor.session.on('change', function (event: any) {
 })
 
 
-socket.on('receiveText', (data: any) => {
+socket.on('receiveText', (data: {data: string}) => {
     changeLock = true;
-    console.log("Receive text data = " + data.data)
-    editor.session.setValue(data.data, 0);
+    console.log("Receive text data (JSON) = " + data.data)
+    editor.session.setValue(data.data);
     changeLock = false;
 })
 
-socket.on('updateText', (data: any) => {
+socket.on('updateText', (data: string) => {
 
     changeLock = true;
     let response = JSON.parse(data) as SendText;
