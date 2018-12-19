@@ -2,33 +2,11 @@ import { SendText } from '../shared/requestObjects/sendTextObject.js'
 import { Collaborator } from '../shared/requestObjects/collaboratorObject.js' 
 
 let editorContent: string = "";
-let collaborators: Map<string, Collaborator> = new Map<string, Collaborator>();
+let modifiedTimeStamp: number;
+let changeBuffer: SendText[] = [];
 
-export function addCollaborator(id: string, collaborator: Collaborator) {
-    //console.log("adding collab: " + id);
-    collaborators.set(id, collaborator);
-    //console.log(collaborators);
-}
-
-export function removeCollaborator(id: string) {
-    collaborators.delete(id);
-}
-
-export function getCollaborators(): IterableIterator<[string, Collaborator]> {
-    return collaborators.entries();
-}
-
-export function setCollaboratorPosition(id: string, position: any) {
-    //console.log("retrieving collab: " + id);
-    let collaborator = collaborators.get(id);
-    //console.log("collaborator: " + collaborator);
-    if (collaborator != undefined) {
-        collaborator.position = position;
-    }
-}
-
-export function editText(data: string) {
-    let response = JSON.parse(data) as SendText;
+export function editText(data: SendText) {
+    let response = data;
     let text = response.content.reduce(function (accumulator, currentValue) {
         return accumulator + '\n' + currentValue;
     });
@@ -37,7 +15,24 @@ export function editText(data: string) {
     } else if (response.action === 'remove') {
         editorContent = remove(response);
     }
+    let timestamp = Date.now();
+    modifiedTimeStamp = timestamp;
+    response.timeStamp = timestamp;
+    changeBuffer.push(response);
 
+    console.log("Buffer length:", changeBuffer.length);
+    reduceBuffer();
+}
+
+function reduceBuffer() {
+    if (changeBuffer.length > 99) {
+        let itemsToRemove = changeBuffer.length - 99;
+        changeBuffer.splice(0, itemsToRemove);
+    }
+}
+
+export function getChangeBuffer(timestamp: number): SendText[] {
+    return changeBuffer.filter(x => x.timeStamp > timestamp);
 }
 
 /*
@@ -80,4 +75,8 @@ function insert(text: string, response: SendText): string {
 
 export function getEditorContent(): string {
     return editorContent;
+}
+
+export function getModifiedTimeStamp(): number {
+    return modifiedTimeStamp;
 }

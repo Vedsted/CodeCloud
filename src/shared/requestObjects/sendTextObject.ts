@@ -4,6 +4,7 @@ export class SendText {
     public positionStart: { row: number, column: number };
     public content: string[];
     public positionEnd: { row: number, column: number };
+    public timeStamp: number = -1;
 
     constructor(type: string,
         positionStart: { row: number, column: number },
