@@ -1,21 +1,22 @@
 config:
-  target: "http://localhost"
+  target: "http://104.248.254.222"
   phases:
   - duration: 20
     arrivalRate: 10
 scenarios:
-- name: "Send text editing"
-  flow:
-  - get:
-      url: "/"
-  - loop:
-    - post:
-        url: "/editor/editText"
-        headers:
-          Content-Type: "application/json"
-        body: >
-              {"action":"insert","positionStart":{"row":0,"column":0},"content":["y\n"],"positionEnd":{"row":0,"column":1}}
-      think: 2
-    count: 10
+  - name: "Send text editing"
+    flow:
+      - get:
+          url: "/"
+      - post:
+          url: "/editor/editText"
+          headers:
+            Content-Type: "application/json"
+          body: >
+            {"action":"insert","positionStart":{"row":0,"column":1},"content":["y\n"],"positionEnd":{"row":1,"column":0}}
+      - get:
+          url: "/editor/getText/longPolling"
+
+
 
 

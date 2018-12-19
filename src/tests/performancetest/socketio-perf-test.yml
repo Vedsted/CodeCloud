@@ -4,18 +4,86 @@ config:
   - duration: 20
     arrivalRate: 5
 scenarios:
-- name: "Request the main page"
-  engine: "socketio"
-  flow:
-  - get:
-      url: "/"
-  - emit:
-      channel: "getText"
-      namespace: "/collab"
-  - think: 5
-  - emit:
-      channel: "sendText"
-      data: >
-        {"action":"insert","positionStart":{"row": 0,"column": 0},"content":["a"],"positionEnd": {"row": 0,"column": 1}}
-      namespace: "/collab"
-  - think: 15
+  - name: "Simulate a client typing at 200 WPM"
+    weight: 1 #1% of users
+    engine: "socketio"
+    flow:
+    - get:
+        url: "/"
+    - emit:
+        channel: "getText"
+        namespace: "/collab"
+    - think: 2
+    - loop:
+      - emit:
+          channel: "sendText"
+          data: >
+            {"action":"insert","positionStart":{"row": 0,"column": 0},"content":["a\n"],"positionEnd": {"row": 0,"column": 1}}
+          namespace: "/collab"
+      - think: 0.3 #Wait 0.3 seconds between every word
+      count: 400 #Every 200 WPM typer, types 400 chars
+  - name: "Simulate a client typing at 100 WPM"
+    weight: 5 #5% of users
+    engine: "socketio"
+    flow:
+    - get:
+        url: "/"
+    - emit:
+        channel: "getText"
+        namespace: "/collab"
+    - think: 2
+    - loop:
+      - emit:
+          channel: "sendText"
+          data: >
+            {"action":"insert","positionStart":{"row": 0,"column": 0},"content":["b\n"],"positionEnd": {"row": 0,"column": 1}}
+          namespace: "/collab"
+      - think: 0.6 #Wait 0.6 seconds between every word
+      count: 200 #Every 100 WPM typer, types 200 chars
+  - name: "Simulate a client typing at 50 WPM"
+    weight: 14 #14% of users
+    engine: "socketio"
+    flow:
+    - get:
+        url: "/"
+    - emit:
+        channel: "getText"
+        namespace: "/collab"
+    - think: 2
+    - loop:
+      - emit:
+          channel: "sendText"
+          data: >
+            {"action":"insert","positionStart":{"row": 0,"column": 0},"content":["c\n"],"positionEnd": {"row": 0,"column": 1}}
+          namespace: "/collab"
+      - think: 1.2 #Wait 1.2 seconds between every word
+      count: 100 #Every 50 WPM typer, types 100 chars
+  - name: "Simulate a client typing at 25 WPM"
+    weight: 30 #30% of users
+    engine: "socketio"
+    flow:
+    - get:
+        url: "/"
+    - emit:
+        channel: "getText"
+        namespace: "/collab"
+    - think: 2
+    - loop:
+      - emit:
+          channel: "sendText"
+          data: >
+            {"action":"insert","positionStart":{"row": 0,"column": 0},"content":["d\n"],"positionEnd": {"row": 0,"column": 1}}
+          namespace: "/collab"
+      - think: 2.4 #Wait 2.4 seconds between every word
+      count: 50 #Every 25 WPM typer, types 50 chars
+  - name: "Simulate a client watching the editor"
+    weight: 50 #50% of users
+    engine: "socketio"
+    flow:
+    - get:
+        url: "/"
+    - emit:
+        channel: "getText"
+        namespace: "/collab"
+    - think: 40 #watch for 40 seconds
+

@@ -34,6 +34,7 @@ app.get('/front', function (req: any, res: any) {
 });
 
 app.post('/editor/editText', function (req: any , res: any){
+    console.log("Queue size: " + waiting.length)
     editText(req.body);
     // @ts-ignore
     waiting.forEach(res => {
@@ -57,6 +58,7 @@ app.get('/editor/getText', function (req: any, res: any){
 
 let waiting : any = [];
 app.get('/editor/getText/longPolling', function (req: any, res: any){
+    console.log("Longpolling one more")
     if(req.query.latestChange < getLastEditTime()) {
         var getText = new GetText(getEditorContent(),getLastEditTime());
         res.type('json');

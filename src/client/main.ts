@@ -7,10 +7,8 @@ editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");
 
 
-// @ts-ignore
-const socket = io('/collab');
 
-const baseurl = 'http://localhost';
+const baseurl = 'http://104.248.254.222';
 var changeLock = false;
 var polling = false;
 var longpolling = true;
@@ -27,8 +25,41 @@ if(polling || longpolling) {
         ajaxRequest.send(JSON.stringify(request));
     });
 } else if(useSockets){
-    editor.session.on('change', function (event: any) {
 
+    // @ts-ignore
+    const socket = io('/collab');
+    socket.on('receiveText', (data: any) => {
+        changeLock = true;
+        editor.session.setValue(data.data, 0);
+        changeLock = false;
+    })
+
+    socket.on('updateText', (data: any) => {
+
+        changeLock = true;
+        let response = JSON.parse(data) as SendText;
+        if (response.action == 'insert') {
+
+            let text = response.content.reduce(function (e1, e2) {
+                return e1 + '\n' + e2;
+            })
+
+            editor.session.insert(response.positionStart, text);
+
+
+        } else if (response.action == 'remove') {
+            let r = {
+                start: response.positionStart,
+                end: response.positionEnd,
+            } as any;
+
+            editor.session.remove(r);
+
+        }
+        changeLock = false;
+
+    });
+    editor.session.on('change', function (event: any) {
         if (changeLock) return
         console.log(event);
         let request = new SendText(event.action, event.start, event.lines, event.end);
@@ -88,34 +119,4 @@ function poll(){
 }
 
 
-socket.on('receiveText', (data: any) => {
-    changeLock = true;
-    editor.session.setValue(data.data, 0);
-    changeLock = false;
-})
 
-socket.on('updateText', (data: any) => {
-
-    changeLock = true;
-    let response = JSON.parse(data) as SendText;
-    if (response.action == 'insert') {
-
-        let text = response.content.reduce(function (e1, e2) {
-            return e1 + '\n' + e2;
-        })
-
-        editor.session.insert(response.positionStart, text);
-
-
-    } else if (response.action == 'remove') {
-        let r = {
-            start: response.positionStart,
-            end: response.positionEnd,
-        } as any;
-
-        editor.session.remove(r);
-
-    }
-    changeLock = false;
-
-});
