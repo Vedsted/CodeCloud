@@ -1,0 +1,34 @@
+#
+# Requires artillery.io installed.
+#   Install on linux (debian) by running:
+#     sudo npm install -g artillery
+# Run from terminal:
+#   artillery run -o result.json performance-test.yml
+# To generate a report run:
+#   artillery report result.json
+#
+config:
+  target: "http://localhost:8080"
+  processor: "./utility.js" # Custom utility functions for query parameters etc.
+  phases:
+    - duration: 30 # The duration of the test in seconds
+      arrivalRate: 3 # The average number of virtual users pr. sec.
+scenarios:
+  - name: "Simulate a slow (~10 WPM) typist that types in the editor"
+    weight: 50 # Average of 50% of all users
+    flow:
+      - get:
+          url: "/" # Regular HTTP GET request
+      - get:
+          url: "/api/file" # Get the file
+      - think: 5
+      - function: "setGuid"
+      - loop: # Loop the sendText api
+        - patch:
+            url: "/api/sendText?guid={{ guid }}"
+            headers:
+                Content-Type: "application/json; charset=utf-8"
+            body: >
+                {"timeStamp":-1,"action":"insert","positionStart":{"row":0,"column":0},"content":["s\n"],"positionEnd":{"row":0,"column":1}}
+        - think: 1 # Wait X seconds before sending new data
+        count: 60 # Simulate X amount of character sent

@@ -17,9 +17,9 @@ export function editText(data: SendText) {
     }
     let timestamp = Date.now();
     modifiedTimeStamp = timestamp;
+    response.timeStamp = timestamp;
     changeBuffer.push(response);
 
-    console.log("Buffer length:", changeBuffer.length);
     reduceBuffer();
 }
 
