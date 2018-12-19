@@ -17,7 +17,6 @@ export function editText(data: SendText) {
     }
     let timestamp = Date.now();
     modifiedTimeStamp = timestamp;
-    response.timeStamp = timestamp;
     changeBuffer.push(response);
 
     console.log("Buffer length:", changeBuffer.length);
@@ -32,7 +31,7 @@ function reduceBuffer() {
 }
 
 export function getChangeBuffer(timestamp: number): SendText[] {
-    return changeBuffer.filter(x => x.timeStamp > timestamp);
+    return changeBuffer.filter(x => x.timeStamp >= timestamp);
 }
 
 /*

@@ -23,6 +23,7 @@ editor.session.on('change', function (event: any) {
 
 function sendText(url: string, data: SendText) {
     //console.log("sending text...");
+    data.timeStamp = Date.now();
     fetch(url + "?guid=" + clientGUID, {
         method: "PATCH",
         headers: {
