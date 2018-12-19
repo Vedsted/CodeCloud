@@ -31,7 +31,7 @@ function reduceBuffer() {
 }
 
 export function getChangeBuffer(timestamp: number): SendText[] {
-    return changeBuffer.filter(x => x.timeStamp >= timestamp);
+    return changeBuffer.filter(x => x.timeStamp > timestamp);
 }
 
 /*

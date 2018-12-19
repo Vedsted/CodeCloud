@@ -50,12 +50,12 @@ function poll() {
             return response.json();
         })
         .then(json => {
-            latestUpdate = Date.now();
             //console.log(json);
             let updates = JSON.parse(json) as SendText[];
             //console.log(updates);
             updates.forEach(element => {
                 updateText(element);
+                latestUpdate = element.timeStamp;
             });
         })
         .then(() => {
