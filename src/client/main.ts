@@ -12,24 +12,35 @@ const socket = io('/collab');
 
 const baseurl = 'http://localhost';
 var changeLock = false;
+var polling = false;
 var longpolling = true;
+var useSockets = false;
 
+if(polling || longpolling) {
+    editor.session.on('change', function (event: any) {
 
-editor.session.on('change', function (event: any) {
+        if (changeLock) return
+        let request = new SendText(event.action, event.start, event.lines, event.end);
+        var ajaxRequest = new XMLHttpRequest();
+        ajaxRequest.open("POST", baseurl + '/editor/editText');
+        ajaxRequest.setRequestHeader('Content-Type', 'application/json');
+        ajaxRequest.send(JSON.stringify(request));
+    });
+} else if(useSockets){
+    editor.session.on('change', function (event: any) {
 
-    if (changeLock) return
-    console.log(event);
-    let request = new SendText(event.action, event.start, event.lines, event.end);
-    var ajaxRequest = new XMLHttpRequest();
-    ajaxRequest.open("POST",baseurl + '/editor/editText?text=' + JSON.stringify(request));
-    ajaxRequest.send();
-    //socket.emit('sendText', JSON.stringify(request));
-});
+        if (changeLock) return
+        console.log(event);
+        let request = new SendText(event.action, event.start, event.lines, event.end);
+        socket.emit('sendText', JSON.stringify(request));
+    });
+    socket.emit('getText')
+}
 
 var latestEditTime : number = 0;
-if(longpolling){
+if(longpolling && !polling){
     window.addEventListener('load', () => longpoll());
-}else {
+}else if(!longpolling && polling) {
     window.addEventListener('load', () => poll());
 }
 function longpoll(){
@@ -37,7 +48,7 @@ function longpoll(){
         .then(res =>res.json())
         .then(json => {
             changeLock = true;
-            console.log(json);
+
             if (json != '') {
                 let response = json as GetText;
                 latestEditTime = response.lastEditTime;
@@ -60,7 +71,6 @@ function poll(){
     ajaxRequest.onreadystatechange=function(){
         if(this.status == 200){
            changeLock = true;
-           console.log(ajaxRequest.responseText);
            if(ajaxRequest.responseText != '') {
                let response = JSON.parse(ajaxRequest.responseText) as GetText;
                latestEditTime = response.lastEditTime;
@@ -77,10 +87,9 @@ function poll(){
     setTimeout(poll,5000);
 }
 
-/**
+
 socket.on('receiveText', (data: any) => {
     changeLock = true;
-    console.log("Receive text data = " + data.data)
     editor.session.setValue(data.data, 0);
     changeLock = false;
 })
@@ -110,7 +119,3 @@ socket.on('updateText', (data: any) => {
     changeLock = false;
 
 });
-
-console.log(socket);
-socket.emit('getText')
-**/

@@ -1,0 +1,21 @@
+config:
+  target: "http://localhost"
+  phases:
+  - duration: 20
+    arrivalRate: 5
+scenarios:
+- name: "Request the main page"
+  engine: "socketio"
+  flow:
+  - get:
+      url: "/"
+  - emit:
+      channel: "getText"
+      namespace: "/collab"
+  - think: 5
+  - emit:
+      channel: "sendText"
+      data: >
+        {"action":"insert","positionStart":{"row": 0,"column": 0},"content":["a"],"positionEnd": {"row": 0,"column": 1}}
+      namespace: "/collab"
+  - think: 15

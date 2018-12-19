@@ -4,8 +4,8 @@ let editorContent: string = "";
 let lastEdit: number;
 
 
-export function editText(data: string) {
-    let response = JSON.parse(data) as SendText;
+export function editText(data: SendText) {
+    let response = data;
     let text = response.content.reduce(function (e1, e2) {
         return e1 + '\n' + e2;
     });

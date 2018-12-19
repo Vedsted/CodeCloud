@@ -22,7 +22,7 @@ export class ConnectionHandler {
     }
 
     private sendText(data: string, socket: io.Socket) {
-        editText(data);
+        editText(JSON.parse(data));
         socket.broadcast.emit('updateText', data)
     }
 
