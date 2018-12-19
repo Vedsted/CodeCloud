@@ -2,22 +2,22 @@
 # Requires artillery.io installed.
 
 # Run from terminal:
-#   artillery run -o result.json performance-test.yml
+#   artillery run performance-test.yml
 # To generate a report run:
 #   artillery report result.json
 #
 config:
   target: "http://localhost:80"
   phases:
-  - duration: 1 # The duration of the test in seconds
-    arrivalRate: 1 # The average number of virtual users pr. sec.
+  - duration: 20 # The duration of spawning new virtual users.
+    arrivalRate: 2 # The average number of virtual users pr. sec.
 scenarios:
-- name: "Simulate a very fast typist (~100 WPM) typing in the editor"
-  weight: 3 # Average of 2% of all users
+- name: "Simulate a very fast typist (100 WPM) typing in the editor"
+  weight: 8 # Average of 2% of all users
   engine: "socketio" # Use socketio connection
   flow:
   - get:
-      url: "/" # Regular HTTP GET request
+      url: "/" #  HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
       namespace: "/collab" # The namespace for the socket defined by the server
@@ -28,14 +28,14 @@ scenarios:
         data: >
           {"action":"insert","positionStart":{"row":0,"column":0},"content":["u\n"],"positionEnd":{"row":0,"column":1}}
         namespace: "/collab"
-    - think: 0.110 # Wait X seconds before sending new data
-    count: 530 # Simulate X amount of character sent
+    - think: 0.120 # Wait X seconds before sending new data
+    count: 500 # Simulate X amount of character sent
 - name: "Simulate a fast typist (~50 WPM) typing in the editor"
-  weight: 8 # Average of 8% of all users
+  weight: 12 # Average of 8% of all users
   engine: "socketio" # Use socketio connection
   flow:
   - get:
-      url: "/" # Regular HTTP GET request
+      url: "/" # HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
       namespace: "/collab" # The namespace for the socket defined by the server
@@ -50,10 +50,10 @@ scenarios:
     count: 250 # Simulate X amount of character sent
 - name: "Simulate an average (~25 WPM) typing in the editor"
   weight: 20 # Average of 20% of all users
-  engine: "socketio" # Use socketio connection
+  engine: "socketio"
   flow:
   - get:
-      url: "/" # Regular HTTP GET request
+      url: "/" # HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
       namespace: "/collab" # The namespace for the socket defined by the server
@@ -67,11 +67,11 @@ scenarios:
     - think: 0.480 # Wait X seconds before sending new data
     count: 125 # Simulate X amount of character sent
 - name: "Simulate a slow (~10 WPM) typist that types in the editor"
-  weight: 50 # Average of 50% of all users
+  weight: 25 # Average of 50% of all users
   engine: "socketio" # Use socketio connection
   flow:
   - get:
-      url: "/" # Regular HTTP GET request
+      url: "/" # HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
       namespace: "/collab" # The namespace for the socket defined by the server
@@ -82,32 +82,14 @@ scenarios:
         data: >
           {"action":"insert","positionStart":{"row":0,"column":0},"content":["s\n"],"positionEnd":{"row":0,"column":1}}
         namespace: "/collab"
-    - think: 1 # Wait X seconds before sending new data
-    count: 60 # Simulate X amount of character sent
-#- name: "Simulate a copy/paste user that uses the editor"
-#  weight: 10 # Average of 10% of all users
-#  engine: "socketio" # Use socketio connection
-#  flow:
-#  - get:
-#      url: "/" # Regular HTTP GET request
-#  - emit:
-#      channel: "getText" # The event to send to the server
-#      namespace: "/collab" # The namespace for the socket defined by the server
-#  - think: 5
-#  - loop: # Loop the sendText event via socket.io
-#    - emit:
-#        channel: "sendText"
-#        data: >
-#          {"action":"insert","positionStart":{"row":0,"column":0},"content":["Copy/pasted\n"],"positionEnd":{"row":0,"column":1}}
-#        namespace: "/collab"
-#    - think: 4 # Wait X seconds before sending new data
-#    count: 15 # Simulate X amount chunks sent
+    - think: 1.2 # Wait X seconds before sending new data
+    count: 100 # Simulate X amount of character sent
 - name: "Simulate a lurker on the main page"
   weight: 10 # Roughly 10% of the scenarios is estimated to be users lurking in a file
   engine: "socketio" # Use socketio connection
   flow:
   - get:
-      url: "/" # Regular HTTP GET request
+      url: "/" # HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
       namespace: "/collab" # The namespace for the socket defined by the server

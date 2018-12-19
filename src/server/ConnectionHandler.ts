@@ -13,7 +13,7 @@ export class ConnectionHandler {
     }
 
     private onDisconnect() {
-        console.log('A Client Disconnected')
+
     }
 
     private setupSocketServer(server: io.Server) {
@@ -32,18 +32,10 @@ export class ConnectionHandler {
     }
 
     private onConnect(socket: io.Socket) {
-        console.log('A user connected!');
         this.socketToName.set(socket.id, 'Nickname');
         socket.on('disconnect', () => this.onDisconnect());
         socket.on('sendText', (data: string) => this.sendText(data, socket));
         socket.on('getText', () => this.receiveText(socket));
-        // () => this.listClients();
     }
 
-    private listClients() {
-        this.collabNameSpaces[0].clients((error: any, clients: any) => {
-            if (error) throw error;
-            console.log(clients);
-        });
-    }
 }
