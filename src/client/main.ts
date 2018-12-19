@@ -1,4 +1,5 @@
 import { SendText } from '../shared/requestObjects/sendTextObject.js';
+import {GetText} from "../shared/requestObjects/getTextObject";
 
 // @ts-ignore
 var editor = ace.edit("editor");
@@ -9,8 +10,9 @@ editor.session.setMode("ace/mode/javascript");
 // @ts-ignore
 const socket = io('/collab');
 
+const baseurl = 'http://localhost';
 var changeLock = false;
-
+var longpolling = true;
 
 
 editor.session.on('change', function (event: any) {
@@ -18,10 +20,64 @@ editor.session.on('change', function (event: any) {
     if (changeLock) return
     console.log(event);
     let request = new SendText(event.action, event.start, event.lines, event.end);
-    socket.emit('sendText', JSON.stringify(request));
-})
+    var ajaxRequest = new XMLHttpRequest();
+    ajaxRequest.open("POST",baseurl + '/editor/editText?text=' + JSON.stringify(request));
+    ajaxRequest.send();
+    //socket.emit('sendText', JSON.stringify(request));
+});
+
+var latestEditTime : number = 0;
+if(longpolling){
+    window.addEventListener('load', () => longpoll());
+}else {
+    window.addEventListener('load', () => poll());
+}
+function longpoll(){
+    fetch(baseurl + '/editor/getText/longPolling?latestChange=' + latestEditTime)
+        .then(res =>res.json())
+        .then(json => {
+            changeLock = true;
+            console.log(json);
+            if (json != '') {
+                let response = json as GetText;
+                latestEditTime = response.lastEditTime;
+                var cursorpos = editor.getCursorPosition();
+                editor.session.setValue(response.editorContent);
+                editor.selection.moveTo(cursorpos.row, cursorpos.column);
+                changeLock = false;
+            }
+        })
+        .then(()=>setTimeout(longpoll,0))
+        .catch(rej => console.log("Error: ",rej));
+}
 
 
+function poll(){
+    var ajaxRequest = new XMLHttpRequest();
+    ajaxRequest.open("GET", baseurl + '/editor/getText?latestChange=' + latestEditTime);
+    ajaxRequest.send()
+
+    ajaxRequest.onreadystatechange=function(){
+        if(this.status == 200){
+           changeLock = true;
+           console.log(ajaxRequest.responseText);
+           if(ajaxRequest.responseText != '') {
+               let response = JSON.parse(ajaxRequest.responseText) as GetText;
+               latestEditTime = response.lastEditTime;
+               var cursorpos = editor.getCursorPosition();
+               editor.session.setValue(response.editorContent);
+               editor.selection.moveTo(cursorpos.row, cursorpos.column);
+               changeLock = false;
+           }
+        }
+        else{
+            console.log("No update to text")
+        }
+    }
+    setTimeout(poll,5000);
+}
+
+/**
 socket.on('receiveText', (data: any) => {
     changeLock = true;
     console.log("Receive text data = " + data.data)
@@ -57,3 +113,4 @@ socket.on('updateText', (data: any) => {
 
 console.log(socket);
 socket.emit('getText')
+**/

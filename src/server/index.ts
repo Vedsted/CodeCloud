@@ -4,6 +4,9 @@ import * as http from 'http';
 import * as socketIO from 'socket.io';
 
 import { ConnectionHandler } from "./ConnectionHandler";
+import {editText, getEditorContent, getLastEditTime} from "./editorRef";
+import {GetText} from "../shared/requestObjects/getTextObject";
+
 
 
 const app = express();
@@ -27,6 +30,37 @@ app.get('/', function (req: any, res: any) {
 
 app.get('/front', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../../webcontent/html/front.html'));
+});
+
+app.post('/editor/editText', function (req: any , res: any){
+    editText(req.query.text)
+    // @ts-ignore
+    waiting.forEach(res => {
+        var getText = new GetText(getEditorContent(),getLastEditTime());
+        res.type('json');
+        res.status(200).send(JSON.stringify(getText));
+    });
+    waiting = [];
+    res.send('Success');
+});
+app.get('/editor/getText', function (req: any, res: any){
+    if(req.query.latestChange < getLastEditTime()) {
+        var getText = new GetText(getEditorContent(),getLastEditTime());
+        res.type('json');
+        res.status(200).send(JSON.stringify(getText));
+    } else {
+        res.status(304 ).end();
+    }
+});
+let waiting : any = [];
+app.get('/editor/getText/longPolling', function (req: any, res: any){
+    if(req.query.latestChange < getLastEditTime()) {
+        var getText = new GetText(getEditorContent(),getLastEditTime());
+        res.type('json');
+        res.status(200).send(JSON.stringify(getText));
+    } else {
+        waiting.push(res);
+    }
 });
 
 //API

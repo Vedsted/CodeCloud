@@ -1,6 +1,7 @@
 import { SendText } from '../shared/requestObjects/sendTextObject.js'
 
 let editorContent: string = "";
+let lastEdit: number;
 
 
 export function editText(data: string) {
@@ -13,6 +14,7 @@ export function editText(data: string) {
     } else if (response.action === 'remove') {
         editorContent = remove(text, response);
     }
+    lastEdit = Date.now();
 
 }
 
@@ -54,4 +56,7 @@ function insert(text: string, response: SendText): string {
 
 export function getEditorContent(): string {
     return editorContent;
+}
+export function getLastEditTime():number{
+    return lastEdit;
 }
