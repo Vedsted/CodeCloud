@@ -4,8 +4,8 @@
 config:
   target: "http://localhost:80"
   phases:
-  - duration: 20 # The duration of spawning new virtual users.
-    arrivalRate: 2 # The average number of virtual users pr. sec.
+  - duration: 15 # The duration of spawning new virtual users.
+    arrivalRate: 3 # The average number of virtual users pr. sec.
 scenarios:
 - name: "Simulate a very fast user (100 WPM)"
   weight: 8 # Average of 8% of all users
