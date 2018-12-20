@@ -1,5 +1,5 @@
 #
-# Requires artillery.io installed.
+# Requires artillery.io been installed.
 #
 config:
   target: "http://localhost:80"
@@ -7,7 +7,7 @@ config:
   - duration: 20 # The duration of spawning new virtual users.
     arrivalRate: 2 # The average number of virtual users pr. sec.
 scenarios:
-- name: "Simulate a very fast typist (100 WPM) typing in the editor"
+- name: "Simulate a very fast user (100 WPM)"
   weight: 8 # Average of 8% of all users
   engine: "socketio" # Use socketio connection
   flow:
@@ -15,9 +15,9 @@ scenarios:
       url: "/" #  HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
-      namespace: "/collab" # The namespace for the socket defined by the server
+      namespace: "/collab" # The namespace for the socket (This is defined by the server)
   - think: 5
-  - loop: # Loop the sendText event via socket.io
+  - loop: # Loop the sendText event
     - emit:
         channel: "sendText"
         data: >
@@ -25,7 +25,7 @@ scenarios:
         namespace: "/collab"
     - think: 0.120 # Wait X seconds before sending new data
     count: 500 # Simulate X amount of character sent
-- name: "Simulate a fast typist (~50 WPM) typing in the editor"
+- name: "Simulate a fast user (50 WPM)"
   weight: 12 # Average of 12% of all users
   engine: "socketio" # Use socketio connection
   flow:
@@ -33,9 +33,9 @@ scenarios:
       url: "/" # HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
-      namespace: "/collab" # The namespace for the socket defined by the server
+      namespace: "/collab" # The namespace for the socket (This is defined by the server)
   - think: 5
-  - loop: # Loop the sendText event via socket.io
+  - loop: # Loop the sendText event
     - emit:
         channel: "sendText"
         data: >
@@ -43,7 +43,7 @@ scenarios:
         namespace: "/collab"
     - think: 0.240 # Wait X seconds before sending new data
     count: 250 # Simulate X amount of character sent
-- name: "Simulate an average (~25 WPM) typing in the editor"
+- name: "Simulate an average user (25 WPM)"
   weight: 30 # Average of 30% of all users
   engine: "socketio"
   flow:
@@ -51,9 +51,9 @@ scenarios:
       url: "/" # HTTP GET request
   - emit:
       channel: "getText" # The event to send to the server
-      namespace: "/collab" # The namespace for the socket defined by the server
+      namespace: "/collab" # The namespace for the socket (This is defined by the server)
   - think: 5
-  - loop: # Loop the sendText event via socket.io
+  - loop: # Loop the sendText event
     - emit:
         channel: "sendText"
         data: >
@@ -61,7 +61,7 @@ scenarios:
         namespace: "/collab"
     - think: 0.480 # Wait X seconds before sending new data
     count: 125 # Simulate X amount of character sent
-- name: "Simulate a slow (~10 WPM) typist that types in the editor"
+- name: "Simulate a slow user (10 WPM)"
   weight: 50 # Average of 50% of all users
   engine: "socketio" # Use socketio connection
   flow:
@@ -71,7 +71,7 @@ scenarios:
       channel: "getText" # The event to send to the server
       namespace: "/collab" # The namespace for the socket defined by the server
   - think: 5
-  - loop: # Loop the sendText event via socket.io
+  - loop: # Loop the sendText event
     - emit:
         channel: "sendText"
         data: >
