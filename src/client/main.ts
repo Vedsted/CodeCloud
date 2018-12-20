@@ -1,5 +1,7 @@
 import { SendText } from '../shared/requestObjects/sendTextObject.js';
+import { SimpleTextObject } from '../shared/requestObjects/simpleTextObject.js'
 
+// @ts-ignore
 var editor = ace.edit("editor");
 editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");
@@ -23,7 +25,6 @@ editor.session.on('change', function (event: any) {
 
 function sendText(url: string, data: SendText) {
     //console.log("sending text...");
-    data.timeStamp = Date.now();
     fetch(url + "?guid=" + clientGUID, {
         method: "PATCH",
         headers: {
@@ -38,9 +39,11 @@ function poll() {
 
     if(editor.session.getValue() === "") { // if empty
         getFile()
-        .then(text => {
+        .then(response => {
+            let simpleTextObject = JSON.parse(response) as SimpleTextObject;
+            latestUpdate = simpleTextObject.timeStamp;
             changeLock = true; // Prevent the editor's change event
-            editor.session.setValue(text)
+            editor.session.setValue(simpleTextObject.content);
             changeLock = false;
         });
     }
@@ -51,12 +54,15 @@ function poll() {
         })
         .then(json => {
             //console.log(json);
-            let updates = JSON.parse(json) as SendText[];
-            //console.log(updates);
-            updates.forEach(element => {
-                updateText(element);
-                latestUpdate = element.timeStamp;
-            });
+            let update = JSON.parse(json) as SimpleTextObject;
+            latestUpdate = update.timeStamp;
+            changeLock = true; // Prevent the editor's change event
+            var cursorpos = editor.getCursorPosition();
+            editor.session.setValue(update.content);
+            changeLock = false;
+            // @ts-ignore
+            editor.selection.moveTo(cursorpos.row, cursorpos.column);
+            
         })
         .then(() => {
             setTimeout(poll, 0);
@@ -70,36 +76,12 @@ function poll() {
 async function getFile() {
     return fetch(apiUrl() + "/file", {
         headers: {
-            "Content-Type": "application/text; charset=utf-8"
+            "Content-Type": "application/json; charset=utf-8"
         }
     })
     .then(response =>  {
-        return response.text();
+        return response.json();
     });
-}
-
-function updateText(data: SendText) {
-    changeLock = true;
-    //let response = JSON.parse(data) as SendText;
-    if (data.action == 'insert') {
-
-        let text = data.content.reduce(function (accumulator, currentValue) {
-            return accumulator + '\n' + currentValue;
-        });
-
-        editor.session.insert(data.positionStart, text);
-
-
-    } else if (data.action == 'remove') {
-        let r = {
-            start: data.positionStart,
-            end: data.positionEnd,
-        } as any;
-
-        editor.session.remove(r);
-
-    }
-    changeLock = false;
 }
 
 function apiUrl() {
@@ -113,4 +95,4 @@ function uuidv4() {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, (c: any) =>
       (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     )
-  }
+}

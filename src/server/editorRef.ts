@@ -3,7 +3,6 @@ import { Collaborator } from '../shared/requestObjects/collaboratorObject.js'
 
 let editorContent: string = "";
 let modifiedTimeStamp: number;
-let changeBuffer: SendText[] = [];
 
 export function editText(data: SendText) {
     let response = data;
@@ -17,21 +16,6 @@ export function editText(data: SendText) {
     }
     let timestamp = Date.now();
     modifiedTimeStamp = timestamp;
-    response.timeStamp = timestamp;
-    changeBuffer.push(response);
-
-    reduceBuffer();
-}
-
-function reduceBuffer() {
-    if (changeBuffer.length > 99) {
-        let itemsToRemove = changeBuffer.length - 99;
-        changeBuffer.splice(0, itemsToRemove);
-    }
-}
-
-export function getChangeBuffer(timestamp: number): SendText[] {
-    return changeBuffer.filter(x => x.timeStamp > timestamp);
 }
 
 /*
