@@ -1,4 +1,4 @@
-export class GetTextobj {
+export class SimpleTextObj {
     // Use this class for long-polling
     public content : string;
     public lastEditTime : number;
@@ -7,13 +7,5 @@ export class GetTextobj {
         this.lastEditTime = lastEditTime;
         this.content = editorContent;
 
-    }
-
-    public getContent(){
-        return this.content;
-    }
-
-    public getLastEditTime(){
-        return this.lastEditTime;
     }
 }

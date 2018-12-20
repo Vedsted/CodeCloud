@@ -20,6 +20,7 @@ export function editText(data: SendText) {
 
 
 function remove(text: string, response: SendText): string {
+
     let editorContentLines = editorContent.split('\n') as any[];
     let temp: string = "";
     for (let start = response.positionStart.row; start <= response.positionEnd.row; start++) {
@@ -48,8 +49,8 @@ function insert(text: string, response: SendText): string {
     let value = beforeText + text + afterText;
     editorContentLines[response.positionStart.row] = value;
 
-    return editorContentLines.reduce(function (e1, e2) {
-        return e1 + '\n' + e2;
+    return editorContentLines.reduce(function (accum, current) {
+        return accum + '\n' + current;
     });
 
 }

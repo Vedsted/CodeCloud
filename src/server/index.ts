@@ -7,7 +7,7 @@ import {Request, Response} from "express";
 import { ConnectionHandler } from "./ConnectionHandler";
 
 import * as editor from "./editorRef";
-import {GetTextobj} from "../shared/requestObjects/GetTextObj";
+import {SimpleTextObj} from "../shared/requestObjects/simpleTextObj";
 import * as bodyParser from 'body-parser'
 
 const app = express()
@@ -31,36 +31,23 @@ app.get('/', function (req: any, res: any) {
     res.sendFile(path.join(__dirname, '../../../webcontent/html/index.html'));
 });
 
-app.get('/getText', function (req: Request, res: Response){
-    if(req.query.latestChange < editor.getLastEditTime()) {
-        var getText:  GetTextobj = new GetTextobj(editor.getEditorContent(),editor.getLastEditTime());
-        res.type('json');
-        res.status(200).send(JSON.stringify(getText));
-    } else {
-        res.status(304 ).end();
-    }
-});
-
-
 
 app.post('/editText', function (req: Request , res: Response){
     editor.editText(req.body);
 
     waiting.forEach((res: Response) => {
-        var getText: GetTextobj = new GetTextobj(editor.getEditorContent(),editor.getLastEditTime());
-        res.type('json');
-        res.status(200).send(JSON.stringify(getText));
+        let textObj: SimpleTextObj = new SimpleTextObj(editor.getEditorContent(), editor.getLastEditTime());
+        res.json(JSON.stringify(textObj));
     });
     waiting = []; // Reset Waiting Clients
-    res.send('Successful Edit Text');
+    res.send('OK');
 });
 
 
 app.get('/Polling', function (req: Request, res: Response){
     if(req.query.latestChange < editor.getLastEditTime()) {
-        var getText: GetTextobj = new GetTextobj(editor.getEditorContent(),editor.getLastEditTime());
-        res.type('json');
-        res.status(200).send(JSON.stringify(getText));
+        let textObj: SimpleTextObj = new SimpleTextObj(editor.getEditorContent(),editor.getLastEditTime());
+        res.json(JSON.stringify(textObj));
     } else {
         waiting.push(res);
     }
