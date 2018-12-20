@@ -1,0 +1,73 @@
+config:
+  target: "http://localhost"
+  phases:
+  - duration: 20
+    arrivalRate: 2
+scenarios:
+- name: "Send text editing (10 WPM)"
+  weight: 50 # Average of 50% of all users
+  flow:
+  - get:
+      url: "/"
+  - loop:
+
+    - post:
+        url: "/editText"
+        headers:
+          Content-Type: "application/json"
+        body: >
+          {"action":"insert","positionStart":{"row":0,"column":1},"content":["s\n"],"positionEnd":{"row":1,"column":0}}
+    - get:
+        url: "/Polling"
+    - think: 1.2
+    count: 100
+- name: "Send text editing (25 WPM)"
+  weight: 30 # Average of 30% of all users
+  flow:
+  - get:
+      url: "/"
+  - loop:
+    - post:
+        url: "/editText"
+        headers:
+          Content-Type: "application/json"
+        body: >
+          {"action":"insert","positionStart":{"row":0,"column":1},"content":["a\n"],"positionEnd":{"row":1,"column":0}}
+    - get:
+        url: "/Polling"
+    - think: 0.48
+    count: 125
+- name: "Send text editing (50 WPM)"
+  weight: 12 # Average of 12% of all users
+  flow:
+  - get:
+      url: "/"
+  - loop:
+
+    - post:
+        url: "/editText"
+        headers:
+          Content-Type: "application/json"
+        body: >
+          {"action":"insert","positionStart":{"row":0,"column":1},"content":["f\n"],"positionEnd":{"row":1,"column":0}}
+    - get:
+        url: "/Polling"
+    - think: 0.24
+    count: 250
+- name: "Send text editing (100 WPM)"
+  weight: 8 # Average of 8% of all users
+  flow:
+  - get:
+      url: "/"
+  - loop:
+
+    - post:
+        url: "/editText"
+        headers:
+          Content-Type: "application/json"
+        body: >
+          {"action":"insert","positionStart":{"row":0,"column":1},"content":["u\n"],"positionEnd":{"row":1,"column":0}}
+    - get:
+        url: "/Polling"
+    - think: 0.12
+    count: 500

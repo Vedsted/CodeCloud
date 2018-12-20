@@ -8,7 +8,7 @@ config:
     arrivalRate: 2 # The average number of virtual users pr. sec.
 scenarios:
 - name: "Simulate a very fast typist (100 WPM) typing in the editor"
-  weight: 8 # Average of 2% of all users
+  weight: 8 # Average of 8% of all users
   engine: "socketio" # Use socketio connection
   flow:
   - get:
@@ -26,7 +26,7 @@ scenarios:
     - think: 0.120 # Wait X seconds before sending new data
     count: 500 # Simulate X amount of character sent
 - name: "Simulate a fast typist (~50 WPM) typing in the editor"
-  weight: 12 # Average of 8% of all users
+  weight: 12 # Average of 12% of all users
   engine: "socketio" # Use socketio connection
   flow:
   - get:
@@ -62,7 +62,7 @@ scenarios:
     - think: 0.480 # Wait X seconds before sending new data
     count: 125 # Simulate X amount of character sent
 - name: "Simulate a slow (~10 WPM) typist that types in the editor"
-  weight: 25 # Average of 50% of all users
+  weight: 50 # Average of 50% of all users
   engine: "socketio" # Use socketio connection
   flow:
   - get:
