@@ -32,7 +32,7 @@ app.get('/', function (req: any, res: any) {
 });
 
 
-app.post('/editText', function (req: Request , res: Response){
+app.post('/sendText', function (req: Request , res: Response){
     editor.editText(req.body);
 
     waiting.forEach((res: Response) => {

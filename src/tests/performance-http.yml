@@ -1,8 +1,8 @@
 config:
   target: "http://localhost"
   phases:
-  - duration: 50
-    arrivalRate: 4
+  - duration: 15
+    arrivalRate: 3
 scenarios:
 - name: "Slow user(10 WPM)"
   weight: 50 # Average of 50% of all users
@@ -12,7 +12,7 @@ scenarios:
   - loop:
 
     - post:
-        url: "/editText"
+        url: "/sendText"
         headers:
           Content-Type: "application/json"
         body: >
@@ -28,7 +28,7 @@ scenarios:
       url: "/"
   - loop:
     - post:
-        url: "/editText"
+        url: "/sendText"
         headers:
           Content-Type: "application/json"
         body: >
@@ -45,7 +45,7 @@ scenarios:
   - loop:
 
     - post:
-        url: "/editText"
+        url: "/sendText"
         headers:
           Content-Type: "application/json"
         body: >
@@ -62,7 +62,7 @@ scenarios:
   - loop:
 
     - post:
-        url: "/editText"
+        url: "/sendText"
         headers:
           Content-Type: "application/json"
         body: >

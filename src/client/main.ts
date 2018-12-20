@@ -22,7 +22,7 @@ editor.session.on('change', function (event: any) {
 
 function sendData(data: SendText) {
 
-    fetch(baseURL + "/editText", {
+    fetch(baseURL + "/sendText", {
         method: "POST",
         headers: {
             "Content-Type": "application/json; charset=utf-8"
