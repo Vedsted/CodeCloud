@@ -8,7 +8,7 @@
 #   artillery report result.json
 #
 config:
-  target: "http://localhost:8080"
+  target: "http://codecloud.local:8080"
   phases:
     - duration: 20 # The duration of the test in seconds
       arrivalRate: 2 # The average number of virtual users pr. sec.
@@ -22,7 +22,7 @@ scenarios:
       - emit:
           channel: "getText" # The event to send to the server
           namespace: "/collab" # The namespace for the socket defined by the server
-      - think: 5
+      #- think: 5 # BEWARE!! Think may cause a LOT of ECONNRESET errors when testing..
       - loop: # Loop the sendText event via socket.io
         - emit:
             channel: "sendText"
