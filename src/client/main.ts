@@ -6,9 +6,9 @@ editor.setTheme("ace/theme/monokai");
 editor.session.setMode("ace/mode/javascript");
 
 
-var changeLock = false;
+let changeLock = false;
 const baseURL = "http://localhost";
-var latestEditTime: number = 0;
+let latestEditTime: number = 0;
 
 
 window.addEventListener('load', () => poll());
@@ -18,7 +18,7 @@ editor.session.on('change', function (event: any) {
     if (changeLock) return;
     let data = new SendText(event.action, event.start, event.lines, event.end);
     sendData(data);
-})
+});
 
 function sendData(data: SendText) {
 
@@ -36,15 +36,13 @@ function poll() {
     fetch(baseURL + '/Polling?latestChange=' + latestEditTime)
         .then(res => res.json())
         .then(json => {
-
             let response = JSON.parse(json) as SimpleTextObj;
             latestEditTime = response.lastEditTime;
-            var cursorpos = editor.getCursorPosition(); // Save current cursor position
+            let cursorPos = editor.getCursorPosition(); // Save current cursor position
             changeLock = true;
             editor.session.setValue(response.content);
-            editor.selection.moveTo(cursorpos.row, cursorpos.column); // Restore cursor position
+            editor.selection.moveTo(cursorPos.row, cursorPos.column); // Restore cursor position
             changeLock = false;
-
         })
         .then(() => setTimeout(poll, 0))
         .catch(rej => {
