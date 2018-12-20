@@ -8,7 +8,7 @@
 #   artillery report result.json
 #
 config:
-  target: "http://localhost:8080"
+  target: "http://codecloud.local:8080"
   processor: "./utility.js" # Custom utility functions for query parameters etc.
   phases:
     - duration: 30 # The duration of the test in seconds
@@ -21,7 +21,7 @@ scenarios:
           url: "/" # Regular HTTP GET request
       - get:
           url: "/api/file" # Get the file
-      - think: 5
+      #- think: 5 # BEWARE!! Think may cause a LOT of ECONNRESET errors when testing..
       - function: "setGuid"
       - loop: # Loop the sendText api
         - patch:
