@@ -1,22 +1,81 @@
 config:
   target: "http://104.248.254.222"
+  http:
+    timeout: 5 #As we are testing when clients are typing, if the longPolling request doesn't return within 5 seconds it is because all typing tests have completed.
   phases:
   - duration: 20
-    arrivalRate: 10
+    arrivalRate: 5
 scenarios:
-  - name: "Send text editing"
+  - name: "Simulate a client typing at 200 WPM "
+    weight: 1 #1% of users
     flow:
       - get:
           url: "/"
+      - loop: #Simulate a typing 200 WPM (Without delay) and LongPolling mechanism. As timestamp is omitted in longPolling the polling mechanism appends all requests to the wait queue.
+        - post:
+            url: "/editor/editText"
+            headers:
+              Content-Type: "application/json"
+            body: >
+              {"action":"insert","positionStart":{"row":0,"column":1},"content":["a\n"],"positionEnd":{"row":1,"column":0}}
+        - get:
+            url: "/editor/getText/longPolling"
+        - think: 0.3
+        count: 400
+  - name: "Simulate a client typing at 100 WPM"
+    weight: 5 #5% of users
+    flow:
+    - get:
+        url: "/"
+    - loop: #Simulate a typing 100 WPM (Without delay) and LongPolling mechanism.
       - post:
           url: "/editor/editText"
           headers:
             Content-Type: "application/json"
           body: >
-            {"action":"insert","positionStart":{"row":0,"column":1},"content":["y\n"],"positionEnd":{"row":1,"column":0}}
+            {"action":"insert","positionStart":{"row":0,"column":1},"content":["b\n"],"positionEnd":{"row":1,"column":0}}
       - get:
           url: "/editor/getText/longPolling"
-
-
-
-
+      - think: 0.6
+      count: 200
+  - name: "Simulate a client typing at 50 WPM"
+    weight: 14 #14% of users
+    flow:
+    - get:
+        url: "/"
+    - loop: #Simulate a typing 50 WPM (Without delay) and LongPolling mechanism.
+      - post:
+          url: "/editor/editText"
+          headers:
+            Content-Type: "application/json"
+          body: >
+            {"action":"insert","positionStart":{"row":0,"column":1},"content":["c\n"],"positionEnd":{"row":1,"column":0}}
+      - get:
+          url: "/editor/getText/longPolling"
+      - think: 1.2
+      count: 100
+  - name: "Simulate a client typing at 25 WPM"
+    weight: 30 #30% of users
+    flow:
+    - get:
+        url: "/"
+    - loop: #Simulate a typing 25 WPM (Without delay) and LongPolling mechanism.
+      - post:
+          url: "/editor/editText"
+          headers:
+            Content-Type: "application/json"
+          body: >
+            {"action":"insert","positionStart":{"row":0,"column":1},"content":["d\n"],"positionEnd":{"row":1,"column":0}}
+      - get:
+          url: "/editor/getText/longPolling"
+      - think: 2.4
+      count: 50
+  - name: "Simulate a client watching the editor"
+    weight: 50 #50% of users
+    flow:
+    - get:
+        url: "/"
+    - loop: #Simulate long Polling Mechanism.
+      - get:
+          url: "/editor/getText/longPolling"
+      count: 50

@@ -58,7 +58,6 @@ app.get('/editor/getText', function (req: any, res: any){
 
 let waiting : any = [];
 app.get('/editor/getText/longPolling', function (req: any, res: any){
-    console.log("Longpolling one more")
     if(req.query.latestChange < getLastEditTime()) {
         var getText = new GetText(getEditorContent(),getLastEditTime());
         res.type('json');
