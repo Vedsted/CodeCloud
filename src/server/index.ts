@@ -4,38 +4,27 @@ import * as http from 'http';
 import * as socketIO from 'socket.io';
 import * as compression from 'compression';
 
-import { ConnectionHandler } from "./ConnectionHandler";
+import { SocketHandler } from "./SocketHandler";
 
 
 const app = express();
-app.use(compression());
+//app.use(compression());
+app.use(compression({ threshold: 0 }));
+
 let server = new http.Server(app);
+
 const io = socketIO(server);
-
-const con = new ConnectionHandler(io);
-
-
+const socketHandler = new SocketHandler(io);
 
 const port: number = 80;
 
 app.use('/js', express.static(path.join(__dirname, '../../../webcontent/js')));
 app.use('/css', express.static(path.join(__dirname, '../../../webcontent/css')));
-app.use('/vendors', express.static(path.join(__dirname, '../../../webcontent/vendors')));
 
 
-app.get('/', function (req: any, res: any) {
+app.get('/', function (req: express.Request, res: express.Response) {
     res.sendFile(path.join(__dirname, '../../../webcontent/html/index.html'));
 });
-
-app.get('/front', function (req: any, res: any) {
-    res.sendFile(path.join(__dirname, '../../../webcontent/html/front.html'));
-});
-
-//API
-app.post('/api/createFile', function (req: any, res: any) {
-    console.log("Created a new file!");
-});
-
 
 
 server.listen(port, function () {

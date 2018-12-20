@@ -20,15 +20,13 @@ var changeLock = false;
 editor.session.on('change', function (event: ace.EditorChangeEvent) {
 
     if (changeLock) return
-    console.log(event);
     let request = new SendText(event.action, event.start, event.lines, event.end);
-    socket.emit('sendText', JSON.stringify(request));
+    socket.emit('sendChange', JSON.stringify(request));
 })
 
 
 socket.on('receiveText', (data: { data: string }) => {
     changeLock = true;
-    console.log("Receive text data = " + data.data)
     editor.session.setValue(data.data);
     changeLock = false;
 })
@@ -59,5 +57,4 @@ socket.on('updateText', (data: string) => {
 
 });
 
-console.log(socket);
-socket.emit('getText')
+socket.emit('getDocument')
