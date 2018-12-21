@@ -85,5 +85,5 @@ scenarios:
     - emit:
         channel: "getText"
         namespace: "/collab"
-    - think: 40 #watch for 40 seconds
+    - think: 150 #watch for 150 seconds
 
