@@ -79,7 +79,6 @@ scenarios:
           url: "/" # Regular HTTP GET request
       - get:
           url: "/api/file" # Get the file
-      #- think: 5 # BEWARE!! Think may cause a LOT of ECONNRESET errors when testing..
       - function: "setGuid"
       - loop: # Loop the sendText api
         - patch:
@@ -99,7 +98,6 @@ scenarios:
           url: "/" # Regular HTTP GET request
       - get:
           url: "/api/file" # Get the file
-      #- think: 5 # BEWARE!! Think may cause a LOT of ECONNRESET errors when testing..
       - function: "setGuid"
       - loop: # Loop the sendText api
         - patch:

@@ -14,17 +14,12 @@ let clientGUID: string = uuidv4();
 window.addEventListener("load", () => poll());
 
 editor.session.on('change', function (event: any) {
-
     if (changeLock) return
-    //console.log(event);
     let request = new SendText(event.action, event.start, event.lines, event.end);
     sendText(apiUrl() + "/sendText", request);
-    //console.log("sendText: " + event.lines);
-    //console.log("sendText (JSON data): " + JSON.stringify(request));
 });
 
 function sendText(url: string, data: SendText) {
-    //console.log("sending text...");
     fetch(url + "?guid=" + clientGUID, {
         method: "PATCH",
         headers: {
@@ -32,11 +27,10 @@ function sendText(url: string, data: SendText) {
         },
         body: JSON.stringify(data)
     });
-    //.then(response => //console.log("sendText response: " + response.status));
 }
 
 function poll() {
-
+    // Get the whole file if the editor is empty
     if(editor.session.getValue() === "") { // if empty
         getFile()
         .then(response => {
@@ -48,28 +42,27 @@ function poll() {
         });
     }
 
+    // Polling request
     fetch(apiUrl() + "/updateText?timestamp=" + latestUpdate + "&guid=" + clientGUID)
         .then(response => {
             return response.json();
         })
         .then(json => {
-            //console.log(json);
             let update = JSON.parse(json) as SimpleTextObject;
             latestUpdate = update.timeStamp;
             changeLock = true; // Prevent the editor's change event
-            var cursorpos = editor.getCursorPosition();
-            editor.session.setValue(update.content);
+            var cursorpos = editor.getCursorPosition(); // Save current cursor position
+            editor.session.setValue(update.content); // Replace all existing content with the newest
             changeLock = false;
             // @ts-ignore
-            editor.selection.moveTo(cursorpos.row, cursorpos.column);
-            
+            editor.selection.moveTo(cursorpos.row, cursorpos.column); // Move the cursor to the previous location
         })
         .then(() => {
-            setTimeout(poll, 0);
+            setTimeout(poll, 0); // Start polling immediately, after the previous response
         })
         .catch(error => {
-            //console.log(error)
-            setTimeout(poll, 3000);
+            console.log(error); // An error, like network error occured
+            setTimeout(poll, 3000); // Start polling after 3 sec.
         });
 }
 

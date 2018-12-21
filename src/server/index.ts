@@ -48,10 +48,7 @@ app.patch('/api/sendText', function (req: any, res: any) {
 
     // Notify all waiting clients
     waiting.forEach((res: any, key: string) => {
-        //console.log("clientguid:" + clientGuid + " key: " + key);
         if (clientGuid != key) {
-            //console.log("New SendText arrived, notifying");
-            //console.log(JSON.stringify(req.body));
             let update = new SimpleTextObject(getEditorContent(), getModifiedTimeStamp());
             res.json(JSON.stringify(update));
         }

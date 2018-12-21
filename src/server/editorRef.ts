@@ -1,5 +1,4 @@
 import { SendText } from '../shared/requestObjects/sendTextObject.js'
-import { Collaborator } from '../shared/requestObjects/collaboratorObject.js' 
 
 let editorContent: string = "";
 let modifiedTimeStamp: number;
