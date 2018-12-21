@@ -4,9 +4,9 @@ echo "Installing node modules"
 npm install
 
 echo "Compiling typescript -> javascript"
-tsc -p src/client/tsconfig.json
+browserify src/client/main.ts -p [ tsify --noImplicitAny ] > webcontent/js/main.js
+uglifyjs webcontent/js/main.js -c -o webcontent/js/main.js
 tsc -p src/server/tsconfig.json
-tsc -p src/shared/tsconfig.json
 
 echo "Starting node server"
 node out/server/server
